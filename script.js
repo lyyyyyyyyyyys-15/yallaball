@@ -2,6 +2,18 @@ const container = document.getElementById("matches-container");
 
 let allMatches = [];
 
+function formatTime(timeString){
+
+  if(!timeString) return "لاحقاً";
+
+  const [hours, minutes] = timeString.split(":");
+
+  const hour = parseInt(hours);
+
+  return `${hour}:${minutes} UTC+1`;
+
+}
+
 async function loadMatches(dayOffset = 0) {
 
   container.innerHTML = "جاري تحميل المباريات...";
@@ -20,18 +32,6 @@ async function loadMatches(dayOffset = 0) {
   const data = await response.json();
 
   allMatches = data.events || [];
-
-  function formatTime(timeString){
-
-  if(!timeString) return "لاحقاً";
-
-  const [hours, minutes] = timeString.split(":");
-
-  const hour = parseInt(hours);
-
-  return `${hour}:${minutes} UTC+1`;
-
-}
 
   renderMatches(allMatches, false);
 
