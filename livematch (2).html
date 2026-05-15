@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LiveMatch - المباريات المباشرة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a class="logo" href="#">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24"><path d="M21 3L3 10.53v.98l6.84 2.65L12.48 21h.98L21 3z"/></svg>
+    </div>
+    <div class="logo-text">live<span>match</span></div>
+  </a>
+  <div class="search-wrap">
+    <span class="search-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </span>
+    <input type="text" placeholder="ابحث عن فريق أو بطولة...">
+  </div>
+  <div class="topbar-right">
+    <button class="btn-live"><div class="dot"></div> مباشر الآن</button>
+    <div class="icon-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </div>
+    <div class="icon-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <div class="nav-item active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    الكل
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>
+    كرة القدم
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+    دوري أبطال
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+    عربي
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    الترتيب
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    الجدول
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v2"/><path d="M4 11h8"/><path d="M4 16h4"/><path d="M2 7h10v4H2z"/></svg>
+    أخبار
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content">
+  <div class="main-col">
+    <div class="filters">
+      <div class="filter-btn active">الكل</div>
+      <div class="filter-btn">مباشر <span class="live-count">8</span></div>
+      <div class="filter-btn">اليوم</div>
+      <div class="filter-btn">غداً</div>
+      <div class="filter-btn">انتهت</div>
+    </div>
+
+    <div class="section-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      مباشر الآن
+      <span class="badge-live">8 مباريات</span>
+    </div>
+
+    <!-- EPL -->
+    <div id="matches-container"></div>
+    
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="hero-card">
+      <div class="hero-league-label">
+        <img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNDAgNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iNiIgZmlsbD0iIzNEMTk1QiIvPjxwYXRoIGQ9Ik0yMCA2IEwyMyAxNCBMMzIgMTQgTDI1IDIwIEwyOCAyOCBMMjAgMjIgTDEyIDI4IEwxNSAyMCBMOCAxNCBMMTcgMTRaIiBmaWxsPSIjZmZmIi8+PC9zdmc+" style="width:16px;height:16px;object-fit:contain;border-radius:3px;">
+        الدوري الإنجليزي الممتاز
+        <span class="badge-live">مباشر</span>
+      </div>
+      <div class="hero-teams">
+        <div class="hero-team">
+          <div class="hero-logo"><img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDkiIGZpbGw9IiNDODEwMkUiIHN0cm9rZT0iI0Y2RUI2MSIgc3Ryb2tlLXdpZHRoPSI0Ii8+CjxlbGxpcHNlIGN4PSI1MCIgY3k9IjQyIiByeD0iMjIiIHJ5PSIyNiIgZmlsbD0iI0Y2RUI2MSIvPgo8ZWxsaXBzZSBjeD0iNTAiIGN5PSI0NCIgcng9IjE3IiByeT0iMjEiIGZpbGw9IiNDODEwMkUiLz4KPHBhdGggZD0iTTM4IDM4IEw1MCAyMiBMNjIgMzggTDU4IDM4IEw1OCA1OCBMNDIgNTggTDQyIDM4WiIgZmlsbD0iI0Y2RUI2MSIvPgo8cmVjdCB4PSIyOCIgeT0iNjMiIHdpZHRoPSI0NCIgaGVpZ2h0PSI3IiByeD0iMyIgZmlsbD0iI0Y2RUI2MSIvPgo8cGF0aCBkPSJNMjggNzAgTDM0IDc2IEw2NiA3NiBMNzIgNzBaIiBmaWxsPSIjRjZFQjYxIi8+Cjwvc3ZnPg==" alt="Liverpool"></div>
+          <div class="hero-name">ليفربول</div>
+        </div>
+        <div>
+          <div class="hero-score">2 - 1</div>
+          <div class="hero-min"><div class="live-dot"></div> 67'</div>
+        </div>
+        <div class="hero-team">
+          <div class="hero-logo"><img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDkiIGZpbGw9IiM2Q0FCREQiIHN0cm9rZT0iIzFDMkM1QiIgc3Ryb2tlLXdpZHRoPSIzIi8+CjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjM1IiBmaWxsPSIjMUMyQzVCIi8+CjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjI2IiBmaWxsPSIjNkNBQkREIi8+CjxwYXRoIGQ9Ik01MCAyOCBMNTYgNDIgTDcyIDQyIEw2MCA1MiBMNjQgNjggTDUwIDU4IEwzNiA2OCBMNDAgNTIgTDI4IDQyIEw0NCA0MloiIGZpbGw9IiMxQzJDNUIiLz4KPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iMTAiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuMiIvPgo8L3N2Zz4=" alt="Man City"></div>
+          <div class="hero-name">مان سيتي</div>
+        </div>
+      </div>
+      <div class="tabs">
+        <div class="tab active">ملخص</div>
+        <div class="tab">إحصائيات</div>
+        <div class="tab">تشكيل</div>
+      </div>
+      <div style="padding:8px 0;">
+        <div class="stat-row">
+          <div class="stat-v">14</div>
+          <div class="stat-bar-w"><div class="stat-bar" style="width:58%;background:var(--green)"></div></div>
+          <div class="stat-lbl">التسديدات</div>
+          <div class="stat-bar-w" style="transform:scaleX(-1)"><div class="stat-bar" style="width:42%;background:var(--red)"></div></div>
+          <div class="stat-v">10</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-v">62%</div>
+          <div class="stat-bar-w"><div class="stat-bar" style="width:62%;background:var(--green)"></div></div>
+          <div class="stat-lbl">الاستحواذ</div>
+          <div class="stat-bar-w" style="transform:scaleX(-1)"><div class="stat-bar" style="width:38%;background:var(--red)"></div></div>
+          <div class="stat-v">38%</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-v">5</div>
+          <div class="stat-bar-w"><div class="stat-bar" style="width:45%;background:var(--green)"></div></div>
+          <div class="stat-lbl">على المرمى</div>
+          <div class="stat-bar-w" style="transform:scaleX(-1)"><div class="stat-bar" style="width:55%;background:var(--red)"></div></div>
+          <div class="stat-v">6</div>
+        </div>
+      </div>
+      <button class="btn-watch">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        شاهد المباشر
+      </button>
+      <button class="btn-notif">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        تنبيه لأهداف المباراة
+      </button>
+    </div>
+
+    <!-- Standings -->
+    <div class="sidebar-card">
+      <div class="sidebar-hdr">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+        <span>ترتيب الدوري الإنجليزي</span>
+      </div>
+      <div class="standing-row" style="background:var(--bg3);font-size:10px;color:var(--text3);">
+        <div>#</div><div></div><div>الفريق</div><div>ن</div><div>فا</div><div>شكل</div>
+      </div>
+      <div class="standing-row">
+        <div class="s-pos top">1</div>
+        <div class="s-logo"><img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDkiIGZpbGw9IiNDODEwMkUiIHN0cm9rZT0iI0Y2RUI2MSIgc3Ryb2tlLXdpZHRoPSI0Ii8+CjxlbGxpcHNlIGN4PSI1MCIgY3k9IjQyIiByeD0iMjIiIHJ5PSIyNiIgZmlsbD0iI0Y2RUI2MSIvPgo8ZWxsaXBzZSBjeD0iNTAiIGN5PSI0NCIgcng9IjE3IiByeT0iMjEiIGZpbGw9IiNDODEwMkUiLz4KPHBhdGggZD0iTTM4IDM4IEw1MCAyMiBMNjIgMzggTDU4IDM4IEw1OCA1OCBMNDIgNTggTDQyIDM4WiIgZmlsbD0iI0Y2RUI2MSIvPgo8cmVjdCB4PSIyOCIgeT0iNjMiIHdpZHRoPSI0NCIgaGVpZ2h0PSI3IiByeD0iMyIgZmlsbD0iI0Y2RUI2MSIvPgo8cGF0aCBkPSJNMjggNzAgTDM0IDc2IEw2NiA3NiBMNzIgNzBaIiBmaWxsPSIjRjZFQjYxIi8+Cjwvc3ZnPg=="></div>
+        <div class="s-name">ليفربول</div>
+        <div class="s-pts" style="color:var(--green)">82</div>
+        <div class="s-gd">+45</div>
+        <div class="s-form"><div class="fd fw"></div><div class="fd fw"></div><div class="fd fd2"></div><div class="fd fw"></div><div class="fd fw"></div></div>
+      </div>
+      <div class="standing-row">
+        <div class="s-pos top">2</div>
+        <div class="s-logo"><img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDkiIGZpbGw9IiM2Q0FCREQiIHN0cm9rZT0iIzFDMkM1QiIgc3Ryb2tlLXdpZHRoPSIzIi8+CjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjM1IiBmaWxsPSIjMUMyQzVCIi8+CjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjI2IiBmaWxsPSIjNkNBQkREIi8+CjxwYXRoIGQ9Ik01MCAyOCBMNTYgNDIgTDcyIDQyIEw2MCA1MiBMNjQgNjggTDUwIDU4IEwzNiA2OCBMNDAgNTIgTDI4IDQyIEw0NCA0MloiIGZpbGw9IiMxQzJDNUIiLz4KPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iMTAiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuMiIvPgo8L3N2Zz4="></div>
+        <div class="s-name">مان سيتي</div>
+        <div class="s-pts">78</div>
+        <div class="s-gd">+38</div>
+        <div class="s-form"><div class="fd fw"></div><div class="fd fl"></div><div class="fd fw"></div><div class="fd fw"></div><div class="fd fd2"></div></div>
+      </div>
+      <div class="standing-row">
+        <div class="s-pos top">3</div>
+        <div class="s-logo"><img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDkiIGZpbGw9IiNFRjAxMDciIHN0cm9rZT0iIzlDODI0QSIgc3Ryb2tlLXdpZHRoPSIzIi8+CjxwYXRoIGQ9Ik01MCAxNSBMNjAgMzUgTDgyIDI4IEw3MiA0OCBMODggNTggTDY2IDU4IEw2MCA3OCBMNTAgNjIgTDQwIDc4IEwzNCA1OCBMMTIgNTggTDI4IDQ4IEwxOCAyOCBMNDAgMzVaIiBmaWxsPSIjZmZmIi8+CjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjEwIiBmaWxsPSIjRUYwMTA3Ii8+Cjwvc3ZnPg=="></div>
+        <div class="s-name">أرسنال</div>
+        <div class="s-pts">75</div>
+        <div class="s-gd">+31</div>
+        <div class="s-form"><div class="fd fw"></div><div class="fd fw"></div><div class="fd fw"></div><div class="fd fl"></div><div class="fd fw"></div></div>
+      </div>
+      <div class="standing-row">
+        <div class="s-pos">4</div>
+        <div class="s-logo"><img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDkiIGZpbGw9IiMwMzQ2OTQiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIyIi8+CjxlbGxpcHNlIGN4PSI1MCIgY3k9IjQ1IiByeD0iMjIiIHJ5PSIyNiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjREJBMTExIiBzdHJva2Utd2lkdGg9IjQiLz4KPHBhdGggZD0iTTI4IDQyIFE1MCAxOCA3MiA0MiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjREJBMTExIiBzdHJva2Utd2lkdGg9IjUiLz4KPHBhdGggZD0iTTQwIDM2IEw1MCAyMCBMNjAgMzYgTDU3IDM2IEw1NyA1OCBMNDMgNTggTDQzIDM2WiIgZmlsbD0iI0RCQTExMSIvPgo8cmVjdCB4PSIyNiIgeT0iNjYiIHdpZHRoPSI0OCIgaGVpZ2h0PSI4IiByeD0iMyIgZmlsbD0iI0RCQTExMSIvPgo8L3N2Zz4="></div>
+        <div class="s-name">تشيلسي</div>
+        <div class="s-pts">68</div>
+        <div class="s-gd">+18</div>
+        <div class="s-form"><div class="fd fd2"></div><div class="fd fw"></div><div class="fd fl"></div><div class="fd fw"></div><div class="fd fw"></div></div>
+      </div>
+      <div class="standing-row">
+        <div class="s-pos">5</div>
+        <div class="s-logo"><img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDkiIGZpbGw9IiMyNDFGMjAiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIyIi8+CjxwYXRoIGQ9Ik0yIDUwIEE0OCA0OCAwIDAgMSA1MCAyIEw1MCA5OCBBNDggNDggMCAwIDEgMiA1MFoiIGZpbGw9IiNmZmYiLz4KPHBhdGggZD0iTTMwIDIwIFE0MCAxMiA1MCAyMCBMNTAgMzggUTQwIDMwIDMwIDM4WiIgZmlsbD0iIzI0MUYyMCIvPgo8cGF0aCBkPSJNNTAgMjAgUTYwIDEyIDcwIDIwIEw3MCAzOCBRNjAgMzAgNTAgMzhaIiBmaWxsPSIjZmZmIi8+CjxwYXRoIGQ9Ik0zMCA0NSBRNDAgMzcgNTAgNDUgTDUwIDYzIFE0MCA1NSAzMCA2M1oiIGZpbGw9IiMyNDFGMjAiLz4KPHBhdGggZD0iTTUwIDQ1IFE2MCAzNyA3MCA0NSBMNzAgNjMgUTYwIDU1IDUwIDYzWiIgZmlsbD0iI2ZmZiIvPgo8L3N2Zz4="></div>
+        <div class="s-name">نيوكاسل</div>
+        <div class="s-pts">63</div>
+        <div class="s-gd">+12</div>
+        <div class="s-form"><div class="fd fw"></div><div class="fd fd2"></div><div class="fd fd2"></div><div class="fd fw"></div><div class="fd fl"></div></div>
+      </div>
+    </div>
+
+    <!-- Top Scorers -->
+    <div class="sidebar-card">
+      <div class="sidebar-hdr">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span>أفضل الهدافين</span>
+      </div>
+      <div class="scorer-row">
+        <div class="scorer-rank" style="color:var(--green)">1</div>
+        <div class="scorer-logo"><img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDkiIGZpbGw9IiM2Q0FCREQiIHN0cm9rZT0iIzFDMkM1QiIgc3Ryb2tlLXdpZHRoPSIzIi8+CjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjM1IiBmaWxsPSIjMUMyQzVCIi8+CjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjI2IiBmaWxsPSIjNkNBQkREIi8+CjxwYXRoIGQ9Ik01MCAyOCBMNTYgNDIgTDcyIDQyIEw2MCA1MiBMNjQgNjggTDUwIDU4IEwzNiA2OCBMNDAgNTIgTDI4IDQyIEw0NCA0MloiIGZpbGw9IiMxQzJDNUIiLz4KPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iMTAiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuMiIvPgo8L3N2Zz4="></div>
+        <div class="scorer-info">
+          <div class="scorer-name">إيرلينغ هالاند</div>
+          <div class="scorer-team">مانشستر سيتي</div>
+        </div>
+        <div class="scorer-goals">27 ⚽</div>
+      </div>
+      <div class="scorer-row">
+        <div class="scorer-rank" style="color:var(--text2)">2</div>
+        <div class="scorer-logo"><img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDkiIGZpbGw9IiNDODEwMkUiIHN0cm9rZT0iI0Y2RUI2MSIgc3Ryb2tlLXdpZHRoPSI0Ii8+CjxlbGxpcHNlIGN4PSI1MCIgY3k9IjQyIiByeD0iMjIiIHJ5PSIyNiIgZmlsbD0iI0Y2RUI2MSIvPgo8ZWxsaXBzZSBjeD0iNTAiIGN5PSI0NCIgcng9IjE3IiByeT0iMjEiIGZpbGw9IiNDODEwMkUiLz4KPHBhdGggZD0iTTM4IDM4IEw1MCAyMiBMNjIgMzggTDU4IDM4IEw1OCA1OCBMNDIgNTggTDQyIDM4WiIgZmlsbD0iI0Y2RUI2MSIvPgo8cmVjdCB4PSIyOCIgeT0iNjMiIHdpZHRoPSI0NCIgaGVpZ2h0PSI3IiByeD0iMyIgZmlsbD0iI0Y2RUI2MSIvPgo8cGF0aCBkPSJNMjggNzAgTDM0IDc2IEw2NiA3NiBMNzIgNzBaIiBmaWxsPSIjRjZFQjYxIi8+Cjwvc3ZnPg=="></div>
+        <div class="scorer-info">
+          <div class="scorer-name">محمد صلاح</div>
+          <div class="scorer-team">ليفربول</div>
+        </div>
+        <div class="scorer-goals">24 ⚽</div>
+      </div>
+      <div class="scorer-row">
+        <div class="scorer-rank" style="color:var(--text2)">3</div>
+        <div class="scorer-logo"><img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDkiIGZpbGw9IiNGRUJFMTAiIHN0cm9rZT0iIzAwNTI5RiIgc3Ryb2tlLXdpZHRoPSI0Ii8+CjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjM1IiBmaWxsPSIjZmZmIi8+CjxwYXRoIGQ9Ik01MCAyMCBMNTYgMzcgTDc1IDM3IEw2MCA0OCBMNjYgNjUgTDUwIDU0IEwzNCA2NSBMNDAgNDggTDI1IDM3IEw0NCAzN1oiIGZpbGw9IiMwMDUyOUYiLz4KPGNpcmNsZSBjeD0iNTAiIGN5PSI4IiByPSI1IiBmaWxsPSIjMDA1MjlGIi8+CjxyZWN0IHg9IjQ3IiB5PSIyIiB3aWR0aD0iNiIgaGVpZ2h0PSIxMiIgZmlsbD0iIzAwNTI5RiIvPgo8L3N2Zz4="></div>
+        <div class="scorer-info">
+          <div class="scorer-name">كيليان مبابي</div>
+          <div class="scorer-team">ريال مدريد</div>
+        </div>
+        <div class="scorer-goals">22 ⚽</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  LiveMatch &copy; 2025 — جميع الحقوق محفوظة
+</div>
+<script src="script.js"></script>
+</body>
+</html>
