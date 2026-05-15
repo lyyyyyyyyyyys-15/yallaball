@@ -14,8 +14,13 @@ document.getElementById("watch-home-name").textContent = home;
 document.getElementById("watch-away-name").textContent = away;
 document.getElementById("watch-home-badge").src = homeBadge;
 document.getElementById("watch-away-badge").src = awayBadge;
-const showScore = scoreHome !== "-" && scoreAway !== "-" && scoreHome !== "" && scoreAway !== "";
-document.getElementById("watch-score").textContent = showScore ? `${scoreHome} - ${scoreAway}` : "VS";
+const matchStarted = scoreHome !== "-" && scoreAway !== "-" && scoreHome !== "" && scoreAway !== "";
+document.getElementById("watch-score").textContent = matchStarted ? `${scoreHome} - ${scoreAway}` : "VS";
+
+if (!matchStarted) {
+  document.getElementById("watch-player-wrapper").style.display = "none";
+  document.getElementById("watch-controls").style.display = "none";
+}
 
 document.title = `KORAGOAL - ${home} vs ${away}`;
 
