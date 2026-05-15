@@ -7,7 +7,7 @@ let currentView = "matches";
 let standingsCache = {};
 
 // 🔴 ضع رابط الـ CSV الخاص بجدول بيانات جوجل هنا بعد النشر 🔴
-const GOOGLE_SHEET_CSV_URL = "ضع_رابط_جوجل_شيت_بصيغة_CSV_هنا";
+const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRpMY_ex09J4BvClxW4FgMCMQW1vfY0KdwfcEoxwRgn8a6FzfeAilgUuPWI_7J_8sNReG-oEGRjgISL/pub?output=csv";
 
 const LEAGUE_IDS = {
   "English Premier League": "4328",
