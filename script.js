@@ -1,35 +1,95 @@
-async function loadMatches() {
+const container = document.getElementById("matches-container");
 
-  const today = new Date().toISOString().split("T")[0];
+let allMatches = [];
+
+async function loadMatches(dayOffset = 0) {
+
+  container.innerHTML = "جاري تحميل المباريات...";
+
+  const date = new Date();
+
+  date.setDate(date.getDate() + dayOffset);
+
+  const formattedDate = date.toISOString().split("T")[0];
 
   const url =
-    `https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d=${today}&s=Soccer`;
+    `https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d=${formattedDate}&s=Soccer`;
 
   const response = await fetch(url);
 
   const data = await response.json();
 
-  const container = document.getElementById("matches-container");
+  allMatches = data.events || [];
+
+  renderMatches(allMatches, false);
+
+}
+
+function renderMatches(matches, onlyLive = false) {
 
   container.innerHTML = "";
 
-  if (!data.events) {
-    container.innerHTML = "<p>لا توجد مباريات اليوم</p>";
+  let filteredMatches = matches;
+
+  if (onlyLive) {
+
+    filteredMatches = matches.filter(match => {
+
+      return (
+        match.strStatus &&
+        (
+          match.strStatus.includes("Live") ||
+          match.strStatus.includes("In Progress")
+        )
+      );
+
+    });
+
+  }
+
+  if (filteredMatches.length === 0) {
+
+    container.innerHTML = `
+    
+      <div class="no-matches">
+        لا توجد مباريات حالياً
+      </div>
+    
+    `;
+
     return;
   }
 
-  data.events.forEach(match => {
+  filteredMatches.forEach(match => {
 
-    const home = match.strHomeTeam;
-    const away = match.strAwayTeam;
+    const home = match.strHomeTeam || "Home";
+    const away = match.strAwayTeam || "Away";
 
-    const homeBadge = match.strHomeTeamBadge || "";
-    const awayBadge = match.strAwayTeamBadge || "";
+    const homeBadge =
+      match.strHomeTeamBadge ||
+      "https://via.placeholder.com/40";
 
-    const scoreHome = match.intHomeScore ?? "-";
-    const scoreAway = match.intAwayScore ?? "-";
+    const awayBadge =
+      match.strAwayTeamBadge ||
+      "https://via.placeholder.com/40";
 
-    const time = match.strTime || "لاحقاً";
+    const scoreHome =
+      match.intHomeScore ?? "-";
+
+    const scoreAway =
+      match.intAwayScore ?? "-";
+
+    const time =
+      match.strTime || "لاحقاً";
+
+    const status =
+      match.strStatus || "";
+
+    const liveBadge =
+      status.includes("Live") ||
+      status.includes("In Progress")
+      ? `<div class="live-small">LIVE</div>`
+      : "";
 
     container.innerHTML += `
 
@@ -41,13 +101,22 @@ async function loadMatches() {
         </div>
 
         <div class="score-box">
-          <div class="score">${scoreHome} - ${scoreAway}</div>
-          <div class="match-status upcoming">${time}</div>
+
+          <div class="score">
+            ${scoreHome} - ${scoreAway}
+          </div>
+
+          <div class="match-status">
+            ${time}
+          </div>
+
+          ${liveBadge}
+
         </div>
 
         <div class="team right">
-          <img class="team-logo" src="${awayBadge}">
           <span class="team-name">${away}</span>
+          <img class="team-logo" src="${awayBadge}">
         </div>
 
       </div>
@@ -57,4 +126,38 @@ async function loadMatches() {
 
 }
 
-loadMatches();
+/* BUTTONS */
+
+document.addEventListener("click", e => {
+
+  if (e.target.classList.contains("filter-btn")) {
+
+    document
+      .querySelectorAll(".filter-btn")
+      .forEach(btn => btn.classList.remove("active"));
+
+    e.target.classList.add("active");
+
+    const text = e.target.textContent.trim();
+
+    if (text === "الكل") {
+      loadMatches(0);
+    }
+
+    if (text === "مباشر") {
+      renderMatches(allMatches, true);
+    }
+
+    if (text === "اليوم") {
+      loadMatches(0);
+    }
+
+    if (text === "غداً") {
+      loadMatches(1);
+    }
+
+  }
+
+});
+
+loadMatches(0);
