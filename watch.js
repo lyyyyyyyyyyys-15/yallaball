@@ -1,50 +1,80 @@
 const params = new URLSearchParams(window.location.search);
+const matchId = parseInt(params.get("id"));
 
-const home = params.get("home") || "--";
-const away = params.get("away") || "--";
-const homeBadge = params.get("homeBadge") || "";
-const awayBadge = params.get("awayBadge") || "";
-const scoreHome = params.get("scoreHome") || "-";
-const scoreAway = params.get("scoreAway") || "-";
-const league = params.get("league") || "";
-const idEvent = params.get("idEvent") || "";
+// 🔴 يجب وضع نفس رابط الـ CSV الخاص بجدول بيانات جوجل هنا 🔴
+const GOOGLE_SHEET_CSV_URL = "ضع_رابط_جوجل_شيت_بصيغة_CSV_هنا";
 
-document.getElementById("watch-home-name").textContent = home;
-document.getElementById("watch-away-name").textContent = away;
-document.getElementById("watch-home-badge").src = homeBadge;
-document.getElementById("watch-away-badge").src = awayBadge;
-const matchStarted = scoreHome !== "-" && scoreAway !== "-" && scoreHome !== "" && scoreAway !== "";
-document.getElementById("watch-score").textContent = matchStarted ? `${scoreHome} - ${scoreAway}` : "VS";
-
-document.title = `KORAGOAL - ${home} vs ${away}`;
-
-/* IFRAME PLAYER */
+/* IFRAME PLAYER ELEMENTS */
 const iframe = document.getElementById("stream-player");
 const urlInput = document.getElementById("stream-url-input");
 const loadBtn = document.getElementById("load-stream-btn");
 
-const DEFAULT_STREAM = "https://cdn25.yshoot.click/chtv/ch1.php";
+// جلب تفاصيل البث والمباراة أوتوماتيكياً من سطر جدول جوجل شيت
+if (matchId) {
+  fetch(GOOGLE_SHEET_CSV_URL)
+    .then(response => response.text())
+    .then(data => {
+      const rows = data.trim().split("\n");
+      
+      if (rows[matchId]) {
+        const matchData = rows[matchId].split(",");
+        
+        // جلب أسماء الفرق والروابط وتنظيفها وفك التشفير العربي
+        const rawHomeText = decodeURIComponent(matchData[0].replace(/"/g, "").trim());
+        const rawAwayText = decodeURIComponent(matchData[1].replace(/"/g, "").trim());
+        
+        let homeName = rawHomeText.split('/').pop().replace(/-/g, ' ') || rawHomeText;
+        let awayName = rawAwayText.split('/').pop().replace(/-/g, ' ') || rawAwayText;
+        
+        // عرض أسماء الفرق في الواجهة
+        document.getElementById("watch-home-name").textContent = homeName;
+        document.getElementById("watch-away-name").textContent = awayName;
+        document.title = `KORAGOAL - بث مباشر ${homeName} ضد ${awayName}`;
+        document.getElementById("watch-score").textContent = "VS";
+
+        // استخراج رابط البث من العمود الأخير في جدول جوجل شيت
+        let rawUrl = matchData[matchData.length - 1].replace(/"/g, "").trim();
+
+        if (rawUrl.startsWith("http")) {
+          // هاتفياً: تحويل صفحة المباراة العادية إلى رابط المشغل المباشر النقي الخاص بياسين تي في
+          let embedUrl = rawUrl.replace("/match/", "/embed/");
+          
+          // تشغيل البث تلقائياً داخل المشغل وعرض الرابط في صندوق التحكم
+          iframe.src = embedUrl;
+          if (urlInput) urlInput.value = embedUrl;
+        } else {
+          document.getElementById("watch-home-name").textContent = "البث غير متوفر";
+          document.getElementById("watch-away-name").textContent = "حالياً";
+        }
+      }
+    })
+    .catch(err => {
+      console.error("خطأ في جلب بيانات البث من جوجل شيت:", err);
+    });
+}
 
 function loadStream(url) {
   if (!url) return;
   iframe.src = url;
 }
 
-urlInput.value = DEFAULT_STREAM;
-
-loadBtn.addEventListener("click", () => {
-  const val = urlInput.value.trim();
-  if (val) loadStream(val);
-});
-
-urlInput.addEventListener("keydown", e => {
-  if (e.key === "Enter") {
+if (loadBtn) {
+  loadBtn.addEventListener("click", () => {
     const val = urlInput.value.trim();
     if (val) loadStream(val);
-  }
-});
+  });
+}
 
-/* THEME */
+if (urlInput) {
+  urlInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      const val = urlInput.value.trim();
+      if (val) loadStream(val);
+    }
+  });
+}
+
+/* THEME CONTROL */
 function toggleTheme(){
   document.body.classList.toggle("dark-mode");
   const isDark = document.body.classList.contains("dark-mode");
@@ -55,57 +85,6 @@ function toggleTheme(){
 const savedTheme = localStorage.getItem("koragoal-theme");
 if (savedTheme === "dark") {
   document.body.classList.add("dark-mode");
-  document.getElementById("theme-toggle").textContent = "☀️";
-}
-
-/* MATCH INFO + HIGHLIGHTS */
-if (idEvent) {
-  fetch(`https://www.thesportsdb.com/api/v1/json/123/lookupevent.php?id=${idEvent}`)
-    .then(r => r.json())
-    .then(data => {
-      const event = data.events?.[0];
-      if (!event) return;
-      if (event.strLeague) document.getElementById("info-league").textContent = event.strLeague;
-      if (event.strDate) {
-        const d = new Date(event.strDate + "T" + (event.strTime || "00:00"));
-        document.getElementById("info-date").textContent = d.toLocaleDateString("ar-SA", {
-          weekday: "long", year: "numeric", month: "long", day: "numeric"
-        });
-      }
-      if (event.strTime) {
-        if (event.strDate) {
-          const d = new Date(event.strDate + "T" + event.strTime);
-          if (!isNaN(d.getTime())) {
-            document.getElementById("info-time").textContent = d.toLocaleTimeString("ar-SA", {
-              hour: "2-digit", minute: "2-digit"
-            });
-          } else {
-            const [h, m] = event.strTime.split(":");
-            document.getElementById("info-time").textContent = `${parseInt(h)}:${m}`;
-          }
-        } else {
-          const [h, m] = event.strTime.split(":");
-          document.getElementById("info-time").textContent = `${parseInt(h)}:${m}`;
-        }
-      }
-      if (event.strVideo) {
-        const youtubeId = event.strVideo.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/)?.[1];
-        if (youtubeId) {
-          document.getElementById("watch-highlights").style.display = "block";
-          document.getElementById("highlights-frame").src = `https://www.youtube.com/embed/${youtubeId}`;
-        }
-      }
-    })
-    .catch(() => {});
-
-  fetch(`https://www.thesportsdb.com/api/v1/json/123/lookuptv.php?id=${idEvent}`)
-    .then(r => r.json())
-    .then(data => {
-      const channels = data.tvtables || [];
-      if (channels.length > 0) {
-        const list = channels.map(c => c.strChannel).filter(Boolean).join("، ");
-        document.getElementById("info-channels").textContent = list;
-      }
-    })
-    .catch(() => {});
+  const themeToggleElement = document.getElementById("theme-toggle");
+  if (themeToggleElement) themeToggleElement.textContent = "☀️";
 }
