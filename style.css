@@ -160,9 +160,19 @@ body{
   min-width:100px;
 }
 
-.score{
-  font-size:24px;
-  font-weight:700;
+.match-time{
+  font-size:22px;
+  font-weight:800;
+  color:#111;
+  text-align:center;
+}
+
+.match-status{
+  margin-top:6px;
+  font-size:12px;
+  color:#777;
+  font-weight:600;
+}
 }
 
 .match-status{
