@@ -6,98 +6,321 @@ let currentLeague = "all";
 let currentView = "matches";
 let standingsCache = {};
 
-// 🔴 ضع هنا رابط الـ CSV المباشر الخاص بجدول بيانات جوجل بعد تعديله 🔴
-const GOOGLE_SHEET_CSV_URL = "ضع_رابط_جوجل_شيت_بصيغة_CSV_هنا";
+const LEAGUE_IDS = {
+  "English Premier League": "4328",
+  "Spanish La Liga": "4335",
+  "Italian Serie A": "4332",
+  "German Bundesliga": "4331",
+  "French Ligue 1": "4334"
+};
 
-async function loadMatches(dayOffset = 0) {
-  if (container) {
-    container.innerHTML = `<div class="no-matches" style="padding:20px; font-size:16px;">جاري تحميل مباريات اليوم تلقائياً...</div>`;
+function teamBadge(url, name, idTeam) {
+  const initial = (name || "?").charAt(0);
+  const fallbackUrl = idTeam ? `https://www.thesportsdb.com/badges/play/${idTeam}.png` : "";
+  const src = (url && url !== "https://via.placeholder.com/24" && url !== "https://via.placeholder.com/40")
+    ? url : fallbackUrl;
+  if (src) {
+    return `<div class="badge-wrapper">
+      <img class="standing-logo" src="${src}" onerror="this.style.display='none'">
+      <div class="team-avatar">${initial}</div>
+    </div>`;
   }
-  
-  try {
-    const response = await fetch(GOOGLE_SHEET_CSV_URL);
-    const csvText = await response.text();
-    const rows = csvText.trim().split("\n");
-    
-    allMatches = [];
-
-    // البدء من السطر الثاني لتخطي العناوين
-    for (let i = 1; i < rows.length; i++) {
-      if (!rows[i]) continue;
-      
-      const matchData = rows[i].split(",");
-      if (matchData.length < 3) continue;
-
-      // قراءة البيانات المباشرة بدون أي عمليات معالجة نصية مسببة للأخطاء
-      let homeTeam = matchData[0].replace(/"/g, "").trim();
-      let awayTeam = matchData[1].replace(/"/g, "").trim();
-      let streamUrl = matchData[2].replace(/"/g, "").trim();
-
-      if (homeTeam && awayTeam && streamUrl.startsWith("http")) {
-        allMatches.push({
-          idEvent: i, 
-          strHomeTeam: homeTeam,
-          strAwayTeam: awayTeam,
-          strHomeTeamBadge: "https://placeholder.com", 
-          strAwayTeamBadge: "https://placeholder.com",
-          intHomeScore: "-",
-          intAwayScore: "-",
-          strStatus: "Live",
-          strLeague: "all"
-        });
-      }
-    }
-  } catch (error) {
-    console.error("خطأ أثناء جلب البيانات:", error);
-    allMatches = [];
-  }
-  
-  renderMatches(allMatches);
+  return `<div class="team-avatar">${initial}</div>`;
 }
 
-function renderMatches(matches) {
-  if (!container) return;
-  container.innerHTML = "";
+async function loadMatches(dayOffset = 0) {
+  container.innerHTML = "جاري تحميل المباريات...";
+  const date = new Date();
+  date.setDate(date.getDate() + dayOffset);
+  const formattedDate = date.toISOString().split("T")[0];
+  const url = `https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d=${formattedDate}&s=Soccer`;
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    allMatches = data.events || [];
+  } catch {
+    allMatches = [];
+  }
+  renderMatches(allMatches, false);
+}
 
-  if (matches.length === 0) {
-    container.innerHTML = `<div class="no-matches">لا توجد مباريات جارية حالياً اليوم</div>`;
+function renderMatches(matches, onlyLive = false) {
+  container.innerHTML = "";
+  let filteredMatches = matches;
+
+  if (currentLeague !== "all") {
+    filteredMatches = filteredMatches.filter(m => m.strLeague === currentLeague);
+  }
+
+  if (onlyLive) {
+    filteredMatches = filteredMatches.filter(m =>
+      m.strStatus && (m.strStatus.includes("Live") || m.strStatus.includes("In Progress"))
+    );
+  }
+
+  if (filteredMatches.length === 0) {
+    container.innerHTML = `<div class="no-matches">لا توجد مباريات حالياً</div>`;
     return;
   }
 
-  matches.forEach(match => {
+  filteredMatches.forEach(match => {
+    const home = match.strHomeTeam || "Home";
+    const away = match.strAwayTeam || "Away";
+    const homeBadge = match.strHomeTeamBadge || "https://via.placeholder.com/40";
+    const awayBadge = match.strAwayTeamBadge || "https://via.placeholder.com/40";
+    const scoreHome = match.intHomeScore ?? "-";
+    const scoreAway = match.intAwayScore ?? "-";
+    const status = match.strStatus || "";
+    const liveBadge = status.includes("Live") || status.includes("In Progress")
+      ? `<div class="live-small">LIVE</div>` : "";
+
+    let localTimeHtml = `<div class="match-time">لاحقاً</div>`;
+    if (match.strTime) {
+      const parts = match.strTime.split(":");
+      const h = parts[0];
+      const m = parts[1] || "00";
+      if (match.strDate) {
+        const d = new Date(match.strDate + "T" + match.strTime);
+        if (!isNaN(d.getTime())) {
+          const lh = d.getHours().toString().padStart(2, "0");
+          const lm = d.getMinutes().toString().padStart(2, "0");
+          localTimeHtml = `<div class="match-time">${lh}:${lm}</div>`;
+        } else {
+          localTimeHtml = `<div class="match-time">${h}:${m}</div>`;
+        }
+      } else {
+        localTimeHtml = `<div class="match-time">${h}:${m}</div>`;
+      }
+    }
+
+    const params = new URLSearchParams({
+      home, away, homeBadge, awayBadge,
+      scoreHome, scoreAway,
+      league: match.strLeague || "",
+      stream: match.strVideo || "",
+      idEvent: match.idEvent || ""
+    });
+
     container.innerHTML += `
-      <div class="match-row" onclick="location.href='watch.html?id=${match.idEvent}'">
+      <div class="match-row" onclick="location.href='watch.html?${params.toString()}'">
         <div class="team">
-          <img class="team-logo" src="${match.strHomeTeamBadge}">
-          <span class="team-name">${match.strHomeTeam}</span>
+          <img class="team-logo" src="${homeBadge}">
+          <span class="team-name">${home}</span>
         </div>
         <div class="score-box">
-          <div class="match-time">مباشر</div>
-          <div class="live-small">LIVE</div>
+          ${localTimeHtml}
+          ${liveBadge}
         </div>
         <div class="team right">
-          <span class="team-name">${match.strAwayTeam}</span>
-          <img class="team-logo" src="${match.strAwayTeamBadge}">
+          <span class="team-name">${away}</span>
+          <img class="team-logo" src="${awayBadge}">
         </div>
       </div>`;
   });
 }
 
-/* تفعيل التبديل والتحكم الكامل بالمظهر بدون أخطاء متداخلة */
+async function loadStandings(leagueName) {
+  const leagueId = LEAGUE_IDS[leagueName];
+  if (!leagueId) return;
+
+  if (standingsCache[leagueName]) {
+    renderStandings(standingsCache[leagueName]);
+    return;
+  }
+
+  standingsContainer.innerHTML = "جاري تحميل الترتيب...";
+  const url = `https://www.thesportsdb.com/api/v1/json/123/lookuptable.php?l=${leagueId}`;
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    const table = data.table || [];
+    standingsCache[leagueName] = table;
+    renderStandings(table);
+  } catch {
+    standingsContainer.innerHTML = `<div class="no-matches">تعذر تحميل الترتيب</div>`;
+  }
+}
+
+function renderStandings(table) {
+  if (!table || table.length === 0) {
+    standingsContainer.innerHTML = `<div class="no-matches">لا يوجد ترتيب متاح</div>`;
+    return;
+  }
+
+  let html = `
+    <div class="standings-table-wrapper">
+      <table class="standings-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th class="th-team">الفريق</th>
+            <th>لعب</th>
+            <th>فوز</th>
+            <th>تعادل</th>
+            <th>خسارة</th>
+            <th>له</th>
+            <th>عليه</th>
+            <th>±</th>
+            <th>نقاط</th>
+            <th>آخر 5</th>
+          </tr>
+        </thead>
+        <tbody>`;
+
+  table.forEach(row => {
+    const rank = row.intRank || "-";
+    const name = row.strTeam || "فريق";
+    const badgeHtml = teamBadge(row.strTeamBadge, name, row.idTeam);
+    const played = row.intPlayed || "0";
+    const win = row.intWin || "0";
+    const draw = row.intDraw || "0";
+    const loss = row.intLoss || "0";
+    const gf = row.intGoalsFor || "0";
+    const ga = row.intGoalsAgainst || "0";
+    const gd = row.intGoalDifference || "0";
+    const pts = row.intPoints || "0";
+    const form = row.strForm || "";
+
+    const formHtml = form ? form.split("").map(c => {
+      const cls = c === "W" ? "form-w" : c === "D" ? "form-d" : c === "L" ? "form-l" : "";
+      const label = c === "W" ? "ف" : c === "D" ? "ت" : c === "L" ? "خ" : c;
+      return `<span class="form-badge ${cls}">${label}</span>`;
+    }).join("") : `<span class="form-na">-</span>`;
+
+    const gdClass = parseInt(gd) > 0 ? "gd-pos" : parseInt(gd) < 0 ? "gd-neg" : "";
+    const topThree = parseInt(rank) <= 3 ? "top-three" : "";
+
+    html += `
+      <tr class="${topThree}">
+        <td class="rank-cell">${rank}</td>
+        <td class="team-cell">
+          ${badgeHtml}
+          <span class="standing-name">${name}</span>
+        </td>
+        <td>${played}</td>
+        <td>${win}</td>
+        <td>${draw}</td>
+        <td>${loss}</td>
+        <td>${gf}</td>
+        <td>${ga}</td>
+        <td class="${gdClass}">${gd}</td>
+        <td class="pts-cell">${pts}</td>
+        <td class="form-cell">${formHtml}</td>
+      </tr>`;
+  });
+
+  html += `</tbody></table></div>`;
+  standingsContainer.innerHTML = html;
+
+  renderSidebarStandings(table);
+}
+
+function renderSidebarStandings(table) {
+  const sidebarContent = document.getElementById("sidebar-standings-content");
+  const sidebarTitle = document.querySelector("#sidebar-standings .sidebar-title");
+  if (!table || table.length === 0) {
+    sidebarContent.innerHTML = `<div class="no-matches" style="padding:15px;font-size:14px;">لا يوجد ترتيب</div>`;
+    return;
+  }
+
+  if (sidebarTitle) {
+    const leagueLabels = {
+      "English Premier League": "الدوري الإنجليزي",
+      "Spanish La Liga": "الدوري الإسباني",
+      "Italian Serie A": "الدوري الألماني",
+      "German Bundesliga": "الدوري الإيطالي",
+      "French Ligue 1": "الدوري الفرنسي"
+    };
+    sidebarTitle.textContent = `ترتيب ${leagueLabels[currentLeague] || currentLeague}`;
+  }
+
+  const top5 = table.slice(0, 5);
+  let html = `<div class="table-header">
+    <div>#</div><div></div><div>الفريق</div><div>ن</div>
+  </div>`;
+
+  top5.forEach(row => {
+    const badgeHtml = teamBadge(row.strTeamBadge, row.strTeam, row.idTeam);
+    html += `<div class="standing-row">
+      <div>${row.intRank}</div>
+      ${badgeHtml}
+      <div class="standing-name">${row.strTeam}</div>
+      <div class="standing-points">${row.intPoints}</div>
+    </div>`;
+  });
+
+  sidebarContent.innerHTML = html;
+}
+
+function switchView(view) {
+  currentView = view;
+  document.querySelectorAll(".view-btn").forEach(b => b.classList.remove("active"));
+  document.querySelector(`.view-btn[data-view="${view}"]`).classList.add("active");
+
+  if (view === "matches") {
+    document.querySelector(".filters").style.display = "flex";
+    document.getElementById("matches-container").style.display = "flex";
+    document.getElementById("standings-container").style.display = "none";
+    renderMatches(allMatches, false);
+  } else {
+    document.querySelector(".filters").style.display = "none";
+    document.getElementById("matches-container").style.display = "none";
+    document.getElementById("standings-container").style.display = "block";
+    if (currentLeague !== "all") {
+      loadStandings(currentLeague);
+    }
+  }
+}
+
+/* EVENTS */
+document.addEventListener("click", e => {
+  if (e.target.classList.contains("filter-btn")) {
+    document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
+    e.target.classList.add("active");
+    const text = e.target.textContent.trim();
+    if (text === "الكل" || text === "اليوم") loadMatches(0);
+    if (text === "مباشر") renderMatches(allMatches, true);
+    if (text === "غداً") loadMatches(1);
+  }
+});
+
+document.addEventListener("click", e => {
+  if (e.target.classList.contains("league-btn")) {
+    document.querySelectorAll(".league-btn").forEach(btn => btn.classList.remove("active"));
+    e.target.classList.add("active");
+    currentLeague = e.target.dataset.league;
+
+    if (currentView === "matches") {
+      renderMatches(allMatches);
+    }
+
+    if (currentLeague !== "all") {
+      loadStandings(currentLeague);
+    } else {
+      loadStandings("English Premier League");
+    }
+  }
+});
+
+document.addEventListener("click", e => {
+  if (e.target.classList.contains("view-btn")) {
+    switchView(e.target.dataset.view);
+  }
+});
+
+/* THEME */
 function toggleTheme(){
   document.body.classList.toggle("dark-mode");
   const isDark = document.body.classList.contains("dark-mode");
   localStorage.setItem("koragoal-theme", isDark ? "dark" : "light");
-  const btn = document.getElementById("theme-toggle");
-  if (btn) btn.textContent = isDark ? "☀️" : "🌙";
+  document.getElementById("theme-toggle").textContent = isDark ? "☀️" : "🌙";
 }
 
 const savedTheme = localStorage.getItem("koragoal-theme");
 if (savedTheme === "dark") {
   document.body.classList.add("dark-mode");
-  const themeBtn = document.getElementById("theme-toggle");
-  if(themeBtn) themeBtn.textContent = "☀️";
+  document.getElementById("theme-toggle").textContent = "☀️";
 }
 
-// استدعاء التشغيل الفوري للمباريات
 loadMatches(0);
+if (currentLeague !== "all") loadStandings(currentLeague);

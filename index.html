@@ -26,7 +26,7 @@
 
       <div class="league-menu">
         <button class="league-btn active" data-league="all">الكل</button>
-        <button class="league-btn" data-league="English Premier League">Premier League</button>
+        <button class="league-btn active" data-league="English Premier League">Premier League</button>
         <button class="league-btn" data-league="Spanish La Liga">La Liga</button>
         <button class="league-btn" data-league="German Bundesliga">Bundesliga</button>
         <button class="league-btn" data-league="Italian Serie A">Serie A</button>
@@ -46,10 +46,7 @@
       </div>
 
       <div class="section-title">مباريات اليوم</div>
-      <!-- تم تجهيز الحاوية أدناه لتستقبل بطاقات المباريات الأوتوماتيكية القادمة من جوجل شيت -->
-      <div id="matches-container">
-        <div class="no-matches" style="padding:20px; font-size:16px;">جاري تحميل مباريات اليوم تلقائياً...</div>
-      </div>
+      <div id="matches-container"></div>
 
       <div id="standings-container">
         <div class="no-matches">اختر دورياً لعرض الترتيب</div>
@@ -75,8 +72,7 @@
             <div class="hero-name">Man City</div>
           </div>
         </div>
-        <!-- تم تعديل زر البث الأبرز ليتوافق مع نظام أرقام أسطر البثوث -->
-        <button class="watch-btn" onclick="location.href='watch.html?id=1'">
+        <button class="watch-btn" onclick="location.href='watch.html?home=Liverpool&amp;away=Man+City&amp;homeBadge=https://media.api-sports.io/football/teams/40.png&amp;awayBadge=https://media.api-sports.io/football/teams/50.png&amp;scoreHome=2&amp;scoreAway=1'">
           مشاهدة المباراة
         </button>
       </div>
