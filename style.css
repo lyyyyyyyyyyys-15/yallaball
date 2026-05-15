@@ -453,6 +453,45 @@ body{
   color:#0f9d77;
 }
 
+/* MATCH INFO */
+
+.match-info{
+  background:#fff;
+  border-radius:18px;
+  border:1px solid rgba(0,0,0,.05);
+  padding:20px;
+  margin-bottom:18px;
+}
+
+.info-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:16px;
+}
+
+.info-item{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:13px;
+  color:#333;
+}
+
+.info-icon{
+  font-size:16px;
+}
+
+.info-label{
+  color:#999;
+  font-weight:600;
+  font-size:12px;
+}
+
+.info-value{
+  font-weight:700;
+  color:#111;
+}
+
 .watch-player-wrapper{
   background:#111;
   border-radius:18px;

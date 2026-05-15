@@ -44,18 +44,43 @@ urlInput.addEventListener("keydown", e => {
   }
 });
 
-/* HIGHLIGHTS */
+/* MATCH INFO + HIGHLIGHTS */
 if (idEvent) {
   fetch(`https://www.thesportsdb.com/api/v1/json/123/lookupevent.php?id=${idEvent}`)
     .then(r => r.json())
     .then(data => {
       const event = data.events?.[0];
-      if (event?.strVideo) {
+      if (!event) return;
+
+      if (event.strLeague) document.getElementById("info-league").textContent = event.strLeague;
+      if (event.strDate) {
+        const d = new Date(event.strDate + "T" + (event.strTime || "00:00"));
+        document.getElementById("info-date").textContent = d.toLocaleDateString("ar-SA", {
+          weekday: "long", year: "numeric", month: "long", day: "numeric"
+        });
+      }
+      if (event.strTime) {
+        const [h, m] = event.strTime.split(":");
+        document.getElementById("info-time").textContent = `${parseInt(h)}:${m}`;
+      }
+
+      if (event.strVideo) {
         const youtubeId = event.strVideo.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/)?.[1];
         if (youtubeId) {
           document.getElementById("watch-highlights").style.display = "block";
           document.getElementById("highlights-frame").src = `https://www.youtube.com/embed/${youtubeId}`;
         }
+      }
+    })
+    .catch(() => {});
+
+  fetch(`https://www.thesportsdb.com/api/v1/json/123/lookuptv.php?id=${idEvent}`)
+    .then(r => r.json())
+    .then(data => {
+      const channels = data.tvtables || [];
+      if (channels.length > 0) {
+        const list = channels.map(c => c.strChannel).filter(Boolean).join("، ");
+        document.getElementById("info-channels").textContent = list;
       }
     })
     .catch(() => {});
