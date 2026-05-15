@@ -1,847 +1,597 @@
- .team-logo{
-  width:32px;
-  height:32px;
-  object-fit:contain;
-}
-#matches-container{
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-  margin-top:20px;
+/* ==========================================================================
+   1. الإعدادات العامة والمتغيرات (Reset & Variables)
+   ========================================================================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-:root{
-  --bg-body:#f4f5f7;
-  --bg-card:#fff;
-  --bg-topbar:#fff;
-  --bg-input:#fff;
-  --bg-info:#f8f9fb;
-  --bg-filter:#fff;
-  --bg-standings:#fff;
-  --bg-modal:#fff;
-  --text-primary:#111;
-  --text-secondary:#666;
-  --text-muted:#777;
-  --text-light:#999;
-  --border-color:rgba(0,0,0,.05);
-  --border-strong:rgba(0,0,0,.08);
-  --border-topbar:rgba(0,0,0,.06);
-  --shadow-hover:rgba(0,0,0,.08);
-  --hover-row:#f0faf6;
-  --accent:#0f9d77;
-  --danger:#ea3943;
-  --hero-bg:#111827;
-  --hero-text:#fff;
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #121212;
+  color: #ffffff;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-.dark-mode{
-  --bg-body:#0d1117;
-  --bg-card:#161b22;
-  --bg-topbar:#161b22;
-  --bg-input:#21262d;
-  --bg-info:#21262d;
-  --bg-filter:#21262d;
-  --bg-standings:#161b22;
-  --bg-modal:#1c2128;
-  --text-primary:#e6edf3;
-  --text-secondary:#8b949e;
-  --text-muted:#8b949e;
-  --text-light:#6e7681;
-  --border-color:rgba(255,255,255,.08);
-  --border-strong:rgba(255,255,255,.12);
-  --border-topbar:rgba(255,255,255,.08);
-  --shadow-hover:rgba(0,0,0,.3);
-  --hover-row:#1c2e26;
-  --accent:#2ea043;
-  --danger:#da3633;
-  --hero-bg:#0d1117;
-  --hero-text:#fff;
+/* إدارة الوضع الفاتح */
+body.light-theme {
+  background-color: #f4f6f9;
+  color: #1a1a1a;
 }
 
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
+/* ==========================================================================
+   2. الشريط العلوي (Topbar)
+   ========================================================================== */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1e1e1e;
+  padding: 15px 20px;
+  border-bottom: 2px solid #292929;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-body{
-  font-family:Arial,sans-serif;
-  background:var(--bg-body);
-  color:var(--text-primary);
-  direction:rtl;
-  transition:background .3s,color .3s;
+body.light-theme .topbar {
+  background-color: #ffffff;
+  border-bottom: 2px solid #e0e0e0;
 }
 
-/* TOPBAR */
-
-.topbar{
-  height:70px;
-  background:var(--bg-topbar);
-  border-bottom:1px solid var(--border-topbar);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 24px;
-  position:sticky;
-  top:0;
-  z-index:100;
-  transition:background .3s,border .3s;
+.logo-text {
+  font-size: 24px;
+  font-weight: 900;
+  color: #e50914;
+  letter-spacing: 1px;
 }
 
-.logo-text{
-  font-size:24px;
-  font-weight:700;
-  color:var(--accent);
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
-.live-btn{
-  background:var(--danger);
-  color:#fff;
-  padding:8px 14px;
-  border-radius:30px;
-  font-size:13px;
-  font-weight:700;
+.live-btn {
+  background-color: #e50914;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: bold;
+  animation: pulse 1.5s infinite;
 }
 
-.topbar-left{
-  display:flex;
-  align-items:center;
-  gap:12px;
+.back-btn {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 15px;
+  transition: color 0.2s;
 }
 
-.theme-toggle{
-  width:36px;
-  height:36px;
-  border-radius:50%;
-  background:var(--bg-filter);
-  border:1px solid var(--border-strong);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  font-size:18px;
-  transition:.2s;
-  user-select:none;
+body.light-theme .back-btn {
+  color: #1a1a1a;
 }
 
-.theme-toggle:hover{
-  border-color:var(--accent);
+.theme-toggle {
+  cursor: pointer;
+  font-size: 20px;
+  user-select: none;
 }
 
-/* MAIN */
-
-.content{
-  max-width:1200px;
-  margin:auto;
-  padding:20px;
-  display:grid;
-  grid-template-columns:1fr 320px;
-  gap:18px;
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.85; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
-@media(max-width:950px){
+/* ==========================================================================
+   3. هيكل المحتوى والتقسيم (Grid Layout)
+   ========================================================================== */
+.content {
+  display: flex;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 0 15px;
+  gap: 20px;
+}
 
-  .content{
-    grid-template-columns:1fr;
+.main-col {
+  flex: 1;
+  min-width: 0; /* منع خروج العناصر عن الصندوق */
+}
+
+.sidebar {
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (max-width: 992px) {
+  .content {
+    flex-direction: column;
   }
-
-  .sidebar{
-    display:none;
+  .sidebar {
+    width: 100%;
   }
-
-}
-
-/* FILTERS */
-
-.filters{
-  display:flex;
-  gap:10px;
-  margin-bottom:18px;
-}
-
-.filter-btn{
-  background:var(--bg-filter);
-  border:1px solid var(--border-strong);
-  padding:8px 16px;
-  border-radius:30px;
-  cursor:pointer;
-  transition:.2s;
-  font-size:13px;
-  font-weight:600;
-  color:var(--text-primary);
-}
-
-.filter-btn.active{
-  background:var(--accent);
-  color:#fff;
-}
-
-/* TITLE */
-
-.section-title{
-  font-size:20px;
-  font-weight:700;
-  margin-bottom:18px;
-}
-
-/* MATCHES */
-
-#matches-container{
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-}
-
-.match-row{
-  background:var(--bg-card);
-  border-radius:16px;
-  padding:16px 20px;
-  display:grid;
-  grid-template-columns:1fr auto 1fr;
-  align-items:center;
-  gap:20px;
-  border:1px solid var(--border-color);
-  transition:.2s,background .3s;
-}
-
-.match-row:hover{
-  transform:translateY(-2px);
-  box-shadow:0 5px 16px var(--shadow-hover);
-}
-
-.team{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.team.right{
-  justify-content:flex-end;
-}
-
-.team-logo{
-  width:38px;
-  height:38px;
-  object-fit:contain;
-}
-
-.team-name{
-  font-size:15px;
-  font-weight:700;
-  color:var(--text-primary);
-}
-
-.score-box{
-  text-align:center;
-  min-width:100px;
-}
-
-.match-time{
-  font-size:22px;
-  font-weight:800;
-  color:var(--text-primary);
-  text-align:center;
-}
-
-.match-status{
-  margin-top:6px;
-  font-size:12px;
-  color:var(--text-muted);
-  font-weight:600;
-}
-
-.match-status{
-  margin-top:4px;
-  font-size:12px;
-  color:var(--text-secondary);
-}
-
-/* SIDEBAR */
-
-.sidebar{
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-}
-
-.sidebar-card{
-  background:var(--bg-card);
-  border-radius:16px;
-  padding:18px;
-  border:1px solid var(--border-color);
-  transition:background .3s;
-}
-
-.sidebar-title{
-  font-size:16px;
-  font-weight:700;
-  margin-bottom:14px;
-}
-
-.standing-row{
-  display:grid;
-  grid-template-columns:25px 30px 1fr auto;
-  align-items:center;
-  gap:10px;
-  padding:10px 0;
-  border-bottom:1px solid var(--border-color);
-}
-
-.standing-row:last-child{
-  border-bottom:none;
-}
-
-.standing-logo{
-  width:24px;
-  height:24px;
-  object-fit:contain;
-}
-
-.team-avatar{
-  width:24px;
-  height:24px;
-  border-radius:8px;
-  background:var(--accent);
-  color:#fff;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  font-size:11px;
-  font-weight:800;
-  flex-shrink:0;
-}
-
-.badge-wrapper{
-  position:relative;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:24px;
-  height:24px;
-}
-
-.badge-wrapper .standing-logo{
-  position:absolute;
-  width:24px;
-  height:24px;
-}
-
-.badge-wrapper .team-avatar{
-  position:absolute;
-}
-
-.standing-name{
-  font-size:14px;
-  font-weight:600;
-  color:var(--text-primary);
 }
 
-.standing-points{
-  font-weight:700;
-  color:var(--accent);
+/* ==========================================================================
+   4. القوائم والأزرار العلوية (Navigation & Filters)
+   ========================================================================== */
+.league-menu, .view-tabs, .filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  overflow-x: auto;
+  padding-bottom: 5px;
 }
-
-/* HERO */
 
-.hero-card{
-  background:#111827;
-  color:#fff;
-  border-radius:18px;
-  padding:20px;
+/* إخفاء شريط التمرير الافتراضي للقوائم المتجاوبة */
+.league-menu::-webkit-scrollbar, .filters::-webkit-scrollbar {
+  height: 4px;
 }
-
-.hero-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:18px;
+.league-menu::-webkit-scrollbar-thumb, .filters::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 10px;
 }
 
-.live-badge{
-  background:var(--danger);
-  padding:5px 10px;
-  border-radius:20px;
-  font-size:11px;
-  font-weight:700;
+.league-btn, .view-btn, .filter-btn {
+  background-color: #1e1e1e;
+  color: #b3b3b3;
+  border: 1px solid #333;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.2s;
 }
 
-.hero-teams{
-  display:grid;
-  grid-template-columns:1fr auto 1fr;
-  align-items:center;
-  gap:10px;
+body.light-theme .league-btn, body.light-theme .view-btn, body.light-theme .filter-btn {
+  background-color: #ffffff;
+  color: #555555;
+  border: 1px solid #ddd;
 }
 
-.hero-team{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:10px;
+.league-btn.active, .view-btn.active, .filter-btn.active {
+  background-color: #e50914;
+  color: #ffffff;
+  border-color: #e50914;
 }
 
-.hero-logo{
-  width:60px;
-  height:60px;
-  object-fit:contain;
+.section-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 15px 0;
+  border-right: 4px solid #e50914;
+  padding-right: 10px;
 }
 
-.hero-name{
-  font-size:14px;
-  font-weight:700;
+/* ==========================================================================
+   5. أتمتة بطاقات جدول المباريات الديناميكية (Match Rows)
+   ========================================================================== */
+#matches-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.hero-score{
-  font-size:34px;
-  font-weight:700;
+.match-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1e1e1e;
+  padding: 15px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid #292929;
+  transition: transform 0.2s, border-color 0.2s;
 }
 
-.watch-btn{
-  margin-top:20px;
-  width:100%;
-  border:none;
-  background:var(--accent);
-  color:#fff;
-  height:46px;
-  border-radius:12px;
-  font-size:15px;
-  font-weight:700;
-  cursor:pointer;
+body.light-theme .match-row {
+  background-color: #ffffff;
+  border-color: #eaeaea;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
-
-/* TABLE */
 
-.table-header{
-  display:grid;
-  grid-template-columns:25px 30px 1fr auto;
-  gap:10px;
-  padding-bottom:10px;
-  border-bottom:1px solid var(--border-strong);
-  margin-bottom:8px;
-  font-size:12px;
-  color:var(--text-secondary);
+.match-row:hover {
+  transform: translateY(-2px);
+  border-color: #e50914;
 }
-.no-matches{
-  background:var(--bg-card);
-  padding:30px;
-  border-radius:16px;
-  text-align:center;
-  font-size:18px;
-  font-weight:700;
-  color:var(--text-secondary);
-  transition:background .3s;
-}
 
-.live-small{
-  margin-top:6px;
-  background:var(--danger);
-  color:#fff;
-  display:inline-block;
-  padding:4px 8px;
-  border-radius:20px;
-  font-size:10px;
-  font-weight:700;
+.team {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 40%;
 }
 
-.timezone{
-  margin-top:4px;
-  font-size:11px;
-  color:var(--text-muted);
-  font-weight:600;
-  text-align:center;
+.team.right {
+  justify-content: flex-end;
+  text-align: left;
 }
 
-.league-menu{
-  display:flex;
-  gap:10px;
-  margin-bottom:18px;
-  flex-wrap:wrap;
+.team-logo {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  background: #252525;
+  padding: 4px;
+  border-radius: 50%;
 }
 
-.league-btn{
-  border:none;
-  background:var(--bg-filter);
-  padding:10px 16px;
-  border-radius:30px;
-  font-size:13px;
-  font-weight:700;
-  cursor:pointer;
-  transition:.2s;
-  border:1px solid var(--border-strong);
-  color:var(--text-primary);
+body.light-theme .team-logo {
+  background: #f0f0f0;
 }
 
-.league-btn:hover{
-  background:var(--accent);
-  color:#fff;
+.team-name {
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.league-btn.active{
-  background:var(--accent);
-  color:#fff;
+.score-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 20%;
+  text-align: center;
 }
-
-/* WATCH PAGE */
 
-.back-btn{
-  text-decoration:none;
-  color:var(--text-primary);
-  font-size:15px;
-  font-weight:600;
-  transition:color .3s;
+.match-time {
+  font-size: 14px;
+  font-weight: bold;
+  color: #e50914;
 }
 
-.watch-page{
-  max-width:960px;
-  margin:auto;
-  padding:24px;
+.live-small {
+  background-color: #e50914;
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+  margin-top: 4px;
 }
 
-.watch-match-header{
-  display:grid;
-  grid-template-columns:1fr auto 1fr;
-  align-items:center;
-  gap:20px;
-  background:var(--bg-card);
-  border-radius:18px;
-  padding:24px 20px;
-  border:1px solid var(--border-color);
-  margin-bottom:20px;
-  transition:background .3s;
+.no-matches {
+  text-align: center;
+  padding: 40px;
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  color: #888;
 }
 
-.watch-team{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:10px;
+body.light-theme .no-matches {
+  background-color: #ffffff;
 }
 
-.watch-logo{
-  width:64px;
-  height:64px;
-  object-fit:contain;
+/* ==========================================================================
+   6. صفحة المشاهدة والمشغل الأوتوماتيكي (Watch Page & Player)
+   ========================================================================== */
+.watch-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 10px;
 }
 
-.watch-team-name{
-  font-size:18px;
-  font-weight:700;
-  color:var(--text-primary);
+.watch-match-header {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: linear-gradient(135deg, #1e1e1e, #141414);
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
-.watch-score{
-  font-size:36px;
-  font-weight:800;
-  color:var(--accent);
+body.light-theme .watch-match-header {
+  background: linear-gradient(135deg, #ffffff, #f0f0f0);
 }
 
-/* MATCH INFO */
-
-.match-info{
-  background:var(--bg-card);
-  border-radius:18px;
-  border:1px solid var(--border-color);
-  padding:20px;
-  margin-bottom:18px;
-  transition:background .3s;
+.watch-team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
-.info-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
+.watch-logo {
+  width: 65px;
+  height: 65px;
+  object-fit: contain;
 }
 
-.info-card{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:6px;
-  padding:18px 12px;
-  background:var(--bg-info);
-  border-radius:14px;
-  text-align:center;
-  transition:background .3s;
+.watch-team-name {
+  font-size: 18px;
+  font-weight: bold;
 }
 
-.info-card .info-icon{
-  font-size:26px;
-  line-height:1;
+.watch-score {
+  font-size: 32px;
+  font-weight: 900;
+  color: #e50914;
 }
 
-.info-card .info-label{
-  color:#999;
-  font-weight:600;
-  font-size:11px;
+/* حاوية مشغل الفيديو - نسبة أبعاد 16:9 شاشات عرض ذكية */
+.watch-player-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-color: #000000;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  margin-bottom: 20px;
 }
 
-.info-card .info-value{
-  font-weight:700;
-  font-size:13px;
-  color:var(--text-primary);
+.watch-player-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
-.watch-player-wrapper{
-  background:#111;
-  border-radius:18px;
-  overflow:hidden;
-  aspect-ratio:16/9;
-  margin-bottom:18px;
+/* لوحة روابط التحكم بالبث */
+.watch-controls {
+  background-color: #1e1e1e;
+  padding: 15px 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
 }
 
-#stream-player{
-  width:100%;
-  height:100%;
-  background:#000;
-  border:none;
+body.light-theme .watch-controls {
+  background-color: #ffffff;
 }
 
-.watch-controls{
-  background:var(--bg-card);
-  border-radius:18px;
-  padding:20px;
-  border:1px solid var(--border-color);
-  transition:background .3s;
+.watch-label {
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #b3b3b3;
 }
 
-.watch-label{
-  font-size:14px;
-  font-weight:700;
-  margin-bottom:10px;
-  color:var(--text-primary);
+body.light-theme .watch-label {
+  color: #666;
 }
 
-.stream-input-row{
-  display:flex;
-  gap:10px;
+.stream-input-row {
+  display: flex;
+  gap: 10px;
 }
 
-#stream-url-input{
-  flex:1;
-  padding:12px 16px;
-  border:1px solid var(--border-strong);
-  border-radius:12px;
-  font-size:14px;
-  outline:none;
-  background:var(--bg-input);
-  color:var(--text-primary);
-  transition:background .3s,color .3s;
+#stream-url-input {
+  flex: 1;
+  background-color: #121212;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
 }
 
-#stream-url-input:focus{
-  border-color:var(--accent);
+body.light-theme #stream-url-input {
+  background-color: #f4f6f9;
+  color: #000;
+  border-color: #ddd;
 }
 
-#load-stream-btn{
-  background:var(--accent);
-  color:#fff;
-  border:none;
-  padding:12px 24px;
-  border-radius:12px;
-  font-size:14px;
-  font-weight:700;
-  cursor:pointer;
+.stream-hint {
+  font-size: 12px;
+  color: #666;
+  margin-top: 8px;
 }
 
-.stream-hint{
-  font-size:12px;
-  color:var(--text-light);
-  margin-top:10px;
+/* ==========================================================================
+   7. شريط تفاصيل المباراة والترتيب الجانبي (Sidebar & Tables)
+   ========================================================================== */
+.hero-card {
+  background: linear-gradient(45deg, #1e1e1e, #290507);
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #3d0a0d;
 }
 
-.watch-highlights{
-  margin-top:18px;
-  background:var(--bg-card);
-  border-radius:18px;
-  padding:20px;
-  border:1px solid var(--border-color);
-  transition:background .3s;
+.hero-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #aaa;
+  margin-bottom: 15px;
 }
 
-.highlights-player{
-  margin-top:12px;
-  aspect-ratio:16/9;
-  background:#111;
-  border-radius:12px;
-  overflow:hidden;
+.live-badge {
+  background-color: #e50914;
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
 }
 
-#highlights-frame{
-  width:100%;
-  height:100%;
+.hero-teams {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
-.match-row{
-  cursor:pointer;
+.hero-team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  width: 35%;
 }
 
-/* VIEW TABS */
+.hero-logo { width: 45px; height: 45px; object-fit: contain; }
+.hero-name { font-size: 14px; font-weight: bold; text-align: center; }
+.hero-score { font-size: 24px; font-weight: 800; color: #e50914; }
 
-.view-tabs{
-  display:flex;
-  gap:6px;
-  margin-bottom:18px;
-  background:var(--bg-card);
-  border-radius:14px;
-  padding:4px;
-  border:1px solid var(--border-color);
-  width:fit-content;
-  transition:background .3s;
+.watch-btn {
+  width: 100%;
+  background-color: #e50914;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
 }
+.watch-btn:hover { background-color: #b8070f; }
 
-.view-btn{
-  padding:10px 28px;
-  border-radius:12px;
-  font-size:14px;
-  font-weight:700;
-  cursor:pointer;
-  transition:.2s;
-  color:var(--text-secondary);
-  border:none;
-  background:none;
+.sidebar-card {
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  padding: 15px;
+  border: 1px solid #292929;
 }
 
-.view-btn.active{
-  background:var(--accent);
-  color:#fff;
+body.light-theme .sidebar-card {
+  background-color: #ffffff;
+  border-color: #eaeaea;
 }
 
-#standings-container{
-  display:none;
-  margin-top:10px;
+.sidebar-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #333;
 }
-
-/* STANDINGS TABLE */
 
-.standings-table-wrapper{
-  overflow-x:auto;
-  background:var(--bg-standings);
-  border-radius:16px;
-  border:1px solid var(--border-color);
-  transition:background .3s;
+/* جداول الترتيب (Standings Tables) */
+.standings-table-wrapper {
+  overflow-x: auto;
+  background-color: #1e1e1e;
+  border-radius: 10px;
 }
 
-.standings-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:13px;
+body.light-theme .standings-table-wrapper {
+  background-color: #ffffff;
 }
 
-.standings-table th{
-  padding:14px 10px;
-  text-align:center;
-  font-size:12px;
-  color:var(--text-light);
-  font-weight:700;
-  border-bottom:2px solid var(--border-color);
-  white-space:nowrap;
+.standings-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 14px;
 }
 
-.standings-table .th-team{
-  text-align:right;
+.standings-table th, .standings-table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #292929;
 }
 
-.standings-table td{
-  padding:12px 10px;
-  text-align:center;
-  border-bottom:1px solid var(--border-color);
-  font-weight:600;
-  color:var(--text-primary);
+body.light-theme .standings-table th, body.light-theme .standings-table td {
+  border-bottom: 1px solid #eaeaea;
 }
 
-.standings-table tbody tr:hover{
-  background:var(--hover-row);
+.standings-table th {
+  background-color: #141414;
+  color: #aaa;
+  font-weight: 600;
 }
 
-.standings-table tbody tr.top-three td{
-  font-weight:700;
-  color:var(--text-primary);
+body.light-theme .standings-table th {
+  background-color: #f8f9fa;
+  color: #555;
 }
 
-.standings-table tbody tr:last-child td{
-  border-bottom:none;
+.th-team, .team-cell {
+  text-align: right !important;
 }
 
-.team-cell{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  text-align:right;
+.badge-wrapper {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  margin-left: 8px;
 }
 
-.team-cell .standing-logo{
-  width:22px;
-  height:22px;
-  object-fit:contain;
-  flex-shrink:0;
+.standing-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
 }
 
-.team-cell .standing-name{
-  font-size:13px;
-  font-weight:700;
-  color:var(--text-primary);
+.team-avatar {
+  width: 24px;
+  height: 24px;
+  background-color: #444;
+  border-radius: 50%;
+  display: none; /* يظهر فقط في حال فشل تحميل الشعار */
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
 }
 
-.rank-cell{
-  font-weight:800;
-  color:var(--text-primary);
-  width:30px;
+.pts-cell {
+  font-weight: bold;
+  color: #e50914;
 }
 
-.pts-cell{
-  font-weight:800;
-  color:var(--accent);
-  font-size:15px;
+/* شبكة تفاصيل المباراة الفرعية */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
-.gd-pos{ color:var(--accent); }
-.gd-neg{ color:var(--danger); }
-
-/* FORM BADGES */
-
-.form-cell{
-  display:flex;
-  gap:4px;
-  justify-content:center;
-  align-items:center;
+.info-card {
+  background-color: #1e1e1e;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid #292929;
 }
 
-.form-badge{
-  display:inline-flex;
-  width:22px;
-  height:22px;
-  border-radius:6px;
-  align-items:center;
-  justify-content:center;
-  font-size:10px;
-  font-weight:800;
-  color:#fff;
+body.light-theme .info-card {
+  background-color: #ffffff;
+  border-color: #eaeaea;
 }
-
-.form-w{ background:var(--accent); }
-.form-d{ background:#f0ad4e; }
-.form-l{ background:var(--danger); }
-.form-na{ color:#ccc;font-size:12px; }
 
-/* RESPONSIVE TABLE */
+.info-icon { font-size: 20px; margin-bottom: 4px; }
+.info-label { font-size: 12px; color: #888; }
+.info-value { font-size: 14px; font-weight: bold; margin-top: 2px; }
 
-@media(max-width:700px){
-  .standings-table{
-    font-size:11px;
+/* ==========================================================================
+   8. متجاوب لشاشات الهواتف (Mobile Responsiveness)
+   ========================================================================== */
+@media (max-width: 576px) {
+  .match-row {
+    padding: 12px 10px;
   }
-  .standings-table th,
-  .standings-table td{
-    padding:10px 6px;
+  .team-name {
+    font-size: 13px;
   }
-  .team-cell .standing-name{
-    font-size:11px;
+  .team {
+    gap: 8px;
   }
-  .form-badge{
-    width:18px;
-    height:18px;
-    font-size:9px;
+  .team-logo {
+    width: 30px;
+    height: 30px;
   }
-  .view-btn{
-    padding:8px 16px;
-    font-size:13px;
+  .watch-logo {
+    width: 50px;
+    height: 50px;
+  }
+  .watch-team-name {
+    font-size: 15px;
+  }
+  .watch-score {
+    font-size: 24px;
   }
 }
