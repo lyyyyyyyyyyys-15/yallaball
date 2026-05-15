@@ -14,9 +14,7 @@ function formatTime(timeString){
 
 }
 
-  async function loadMatches(
-  dayOffset = 0,
-  league = "English Premier League")
+  async function loadMatches(dayOffset = 0)
   
 {
   container.innerHTML = "جاري تحميل المباريات...";
@@ -28,7 +26,7 @@ function formatTime(timeString){
   const formattedDate = date.toISOString().split("T")[0];
 
   const url =
-  `https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d=${formattedDate}&l=${league}&s=Soccer`;
+  `https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d=${formattedDate}&s=Soccer`;
 
   const response = await fetch(url);
 
@@ -45,6 +43,14 @@ function renderMatches(matches, onlyLive = false) {
   container.innerHTML = "";
 
   let filteredMatches = matches;
+
+  filteredMatches = filteredMatches.filter(match => {
+
+  return (
+    match.strLeague === currentLeague
+  );
+
+});
 
   if (onlyLive) {
 
@@ -188,7 +194,11 @@ document.addEventListener("click", e => {
     const league =
       e.target.dataset.league;
 
-    loadMatches(0, league);
+    currentLeague = league;
+
+    let currentLeague = "English Premier League";
+
+renderMatches(allMatches);
 
   }
 
