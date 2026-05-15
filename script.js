@@ -9,8 +9,8 @@ let standingsCache = {};
 const LEAGUE_IDS = {
   "English Premier League": "4328",
   "Spanish La Liga": "4335",
-  "Italian Serie A": "4331",
-  "German Bundesliga": "4332",
+   "Italian Serie A": "4332",
+  "German Bundesliga": "4331",
   "French Ligue 1": "4334"
 };
 
@@ -214,8 +214,8 @@ function renderSidebarStandings(table) {
     const leagueLabels = {
       "English Premier League": "الدوري الإنجليزي",
       "Spanish La Liga": "الدوري الإسباني",
-      "Italian Serie A": "الدوري الإيطالي",
-      "German Bundesliga": "الدوري الألماني",
+      "Italian Serie A": "الدوري الألماني",
+      "German Bundesliga": "الدوري الإيطالي",
       "French Ligue 1": "الدوري الفرنسي"
     };
     sidebarTitle.textContent = `ترتيب ${leagueLabels[currentLeague] || currentLeague}`;
