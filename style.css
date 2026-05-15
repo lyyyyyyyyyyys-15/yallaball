@@ -330,3 +330,11 @@ body{
   font-size:10px;
   font-weight:700;
 }
+
+.timezone{
+  margin-top:4px;
+  font-size:11px;
+  color:#777;
+  font-weight:600;
+  text-align:center;
+}
