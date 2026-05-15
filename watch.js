@@ -14,7 +14,8 @@ document.getElementById("watch-home-name").textContent = home;
 document.getElementById("watch-away-name").textContent = away;
 document.getElementById("watch-home-badge").src = homeBadge;
 document.getElementById("watch-away-badge").src = awayBadge;
-document.getElementById("watch-score").textContent = `${scoreHome} - ${scoreAway}`;
+const showScore = scoreHome !== "-" && scoreAway !== "-" && scoreHome !== "" && scoreAway !== "";
+document.getElementById("watch-score").textContent = showScore ? `${scoreHome} - ${scoreAway}` : "VS";
 
 document.title = `KORAGOAL - ${home} vs ${away}`;
 
