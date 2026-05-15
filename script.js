@@ -2,7 +2,7 @@ const container = document.getElementById("matches-container");
 
 let allMatches = [];
 
-let currentLeague = "English Premier League";
+let currentLeague = "all";
 
 function formatTime(timeString){
 
@@ -46,13 +46,17 @@ function renderMatches(matches, onlyLive = false) {
 
   let filteredMatches = matches;
 
+  if(currentLeague !== "all"){
+
   filteredMatches = filteredMatches.filter(match => {
 
-  return (
-    match.strLeague === currentLeague
-  );
+    return (
+      match.strLeague === currentLeague
+    );
 
-});
+  });
+
+}
 
   if (onlyLive) {
 
