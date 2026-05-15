@@ -9,18 +9,19 @@ let standingsCache = {};
 const LEAGUE_IDS = {
   "English Premier League": "4328",
   "Spanish La Liga": "4335",
-   "Italian Serie A": "4332",
+  "Italian Serie A": "4332",
   "German Bundesliga": "4331",
   "French Ligue 1": "4334"
 };
 
-const SEASON = "2024-2025";
-
-function teamBadge(url, name) {
+function teamBadge(url, name, idTeam) {
   const initial = (name || "?").charAt(0);
-  if (url && url !== "https://via.placeholder.com/24" && url !== "https://via.placeholder.com/40") {
+  const fallbackUrl = idTeam ? `https://www.thesportsdb.com/badges/play/${idTeam}.png` : "";
+  const src = (url && url !== "https://via.placeholder.com/24" && url !== "https://via.placeholder.com/40")
+    ? url : fallbackUrl;
+  if (src) {
     return `<div class="badge-wrapper">
-      <img class="standing-logo" src="${url}" onerror="this.style.display='none'">
+      <img class="standing-logo" src="${src}" onerror="this.style.display='none'">
       <div class="team-avatar">${initial}</div>
     </div>`;
   }
@@ -84,7 +85,8 @@ function renderMatches(matches, onlyLive = false) {
       home, away, homeBadge, awayBadge,
       scoreHome, scoreAway,
       league: match.strLeague || "",
-      stream: match.strVideo || ""
+      stream: match.strVideo || "",
+      idEvent: match.idEvent || ""
     });
 
     container.innerHTML += `
@@ -116,7 +118,7 @@ async function loadStandings(leagueName) {
   }
 
   standingsContainer.innerHTML = "جاري تحميل الترتيب...";
-  const url = `https://www.thesportsdb.com/api/v1/json/123/lookuptable.php?l=${leagueId}&s=${SEASON}`;
+  const url = `https://www.thesportsdb.com/api/v1/json/123/lookuptable.php?l=${leagueId}`;
   try {
     const response = await fetch(url);
     const data = await response.json();
@@ -157,7 +159,7 @@ function renderStandings(table) {
   table.forEach(row => {
     const rank = row.intRank || "-";
     const name = row.strTeam || "فريق";
-    const badgeHtml = teamBadge(row.strTeamBadge, name);
+    const badgeHtml = teamBadge(row.strTeamBadge, name, row.idTeam);
     const played = row.intPlayed || "0";
     const win = row.intWin || "0";
     const draw = row.intDraw || "0";
@@ -227,7 +229,7 @@ function renderSidebarStandings(table) {
   </div>`;
 
   top5.forEach(row => {
-    const badgeHtml = teamBadge(row.strTeamBadge, row.strTeam);
+    const badgeHtml = teamBadge(row.strTeamBadge, row.strTeam, row.idTeam);
     html += `<div class="standing-row">
       <div>${row.intRank}</div>
       ${badgeHtml}

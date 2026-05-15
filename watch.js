@@ -8,6 +8,7 @@ const scoreHome = params.get("scoreHome") || "-";
 const scoreAway = params.get("scoreAway") || "-";
 const stream = params.get("stream") || "";
 const league = params.get("league") || "";
+const idEvent = params.get("idEvent") || "";
 
 document.getElementById("watch-home-name").textContent = home;
 document.getElementById("watch-away-name").textContent = away;
@@ -42,3 +43,20 @@ urlInput.addEventListener("keydown", e => {
     if (val) loadStream(val);
   }
 });
+
+/* HIGHLIGHTS */
+if (idEvent) {
+  fetch(`https://www.thesportsdb.com/api/v1/json/123/lookupevent.php?id=${idEvent}`)
+    .then(r => r.json())
+    .then(data => {
+      const event = data.events?.[0];
+      if (event?.strVideo) {
+        const youtubeId = event.strVideo.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/)?.[1];
+        if (youtubeId) {
+          document.getElementById("watch-highlights").style.display = "block";
+          document.getElementById("highlights-frame").src = `https://www.youtube.com/embed/${youtubeId}`;
+        }
+      }
+    })
+    .catch(() => {});
+}
