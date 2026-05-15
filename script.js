@@ -116,6 +116,10 @@ function renderMatches(matches, onlyLive = false) {
 
           <div class="match-time">
           ${formatTime(time)}
+         </div>
+
+        < div class="timezone">
+         UTC+1
           </div>
 
           <div class="match-status">
