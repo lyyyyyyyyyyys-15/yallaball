@@ -300,3 +300,23 @@ body{
   font-size:12px;
   color:#666;
 }
+.no-matches{
+  background:#fff;
+  padding:30px;
+  border-radius:16px;
+  text-align:center;
+  font-size:18px;
+  font-weight:700;
+  color:#666;
+}
+
+.live-small{
+  margin-top:6px;
+  background:#ea3943;
+  color:#fff;
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:20px;
+  font-size:10px;
+  font-weight:700;
+}
