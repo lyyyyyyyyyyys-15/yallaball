@@ -16,33 +16,36 @@ if (matchId) {
     .then(data => {
       const rows = data.trim().split("\n");
       
-      if (rows[matchId]) {
-        const matchData = rows[matchId].split(",");
-        
-        // جلب أسماء الفرق والروابط وتنظيفها وفك التشفير العربي
-        const rawHomeText = decodeURIComponent(matchData[0].replace(/"/g, "").trim());
-        const rawAwayText = decodeURIComponent(matchData[1].replace(/"/g, "").trim());
-        
-        let homeName = rawHomeText.split('/').pop().replace(/-/g, ' ') || rawHomeText;
-        let awayName = rawAwayText.split('/').pop().replace(/-/g, ' ') || rawAwayText;
-        
-        // عرض أسماء الفرق في الواجهة
-        document.getElementById("watch-home-name").textContent = homeName;
-        document.getElementById("watch-away-name").textContent = awayName;
-        document.title = `KORAGOAL - بث مباشر ${homeName} ضد ${awayName}`;
-        document.getElementById("watch-score").textContent = "VS";
-
-        // استخراج رابط البث من العمود الأخير في جدول جوجل شيت
-        let rawUrl = matchData[matchData.length - 1].replace(/"/g, "").trim();
-
-        if (rawUrl.startsWith("http")) {
-          // هاتفياً: تحويل صفحة المباراة العادية إلى رابط المشغل المباشر النقي الخاص بياسين تي في
-          let embedUrl = rawUrl.replace("/match/", "/embed/");
+      let rawUrl = rows[matchId - 1] ? rows[matchId - 1].replace(/"/g, "").trim() : "";
+      
+      if (rawUrl && rawUrl.startsWith("http")) {
+        try {
+          let urlParts = rawUrl.split("/match/");
+          let matchSlug = urlParts[1].split("/")[0];
+          let cleanText = decodeURIComponent(matchSlug).replace(/-yacine-tv/g, "").replace(/-\d{4}-\d{2}-\d{2}/g, "").replace(/-/g, " ");
+          let teams = cleanText.split(" ضد ");
           
-          // تشغيل البث تلقائياً داخل المشغل وعرض الرابط في صندوق التحكم
+          let homeName = teams[0] ? teams[0].trim() : "بث مباشر";
+          let awayName = teams[1] ? teams[1].trim() : "مباراة اليوم";
+
+          document.getElementById("watch-home-name").textContent = homeName;
+          document.getElementById("watch-away-name").textContent = awayName;
+          document.title = `KORAGOAL - بث مباشر ${homeName} ضد ${awayName}`;
+          document.getElementById("watch-score").textContent = "VS";
+
+          let embedUrl = rawUrl.replace("/match/", "/embed/");
           iframe.src = embedUrl;
           if (urlInput) urlInput.value = embedUrl;
-        } else {
+         } catch(e) {
+          console.error(e);
+         }
+         } else {
+        document.getElementById("watch-home-name").textContent = "البث غير متوفر حالياً";
+        }
+        })
+       .catch(err => console.error(err));
+       }
+       else {
           document.getElementById("watch-home-name").textContent = "البث غير متوفر";
           document.getElementById("watch-away-name").textContent = "حالياً";
         }
