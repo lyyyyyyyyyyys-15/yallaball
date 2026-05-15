@@ -3,3 +3,38 @@
   height:32px;
   object-fit:contain;
 }
+img{
+  max-width:100%;
+}
+
+.team-logo{
+  width:32px !important;
+  height:32px !important;
+  object-fit:contain;
+  display:block;
+}
+
+.match-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px;
+  background:white;
+  border-radius:12px;
+  margin-bottom:10px;
+}
+
+.team{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.score-box{
+  text-align:center;
+}
+
+.score{
+  font-size:20px;
+  font-weight:bold;
+}
