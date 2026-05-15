@@ -42,30 +42,3 @@ urlInput.addEventListener("keydown", e => {
     if (val) loadStream(val);
   }
 });
-
-/* AD POPUP */
-const popupOverlay = document.getElementById("ad-popup-overlay");
-const popupClose = document.getElementById("ad-popup-close");
-const popupTimer = document.getElementById("ad-popup-timer");
-let popupCountdown = 5;
-
-setTimeout(() => {
-  popupOverlay.style.display = "flex";
-  const interval = setInterval(() => {
-    popupCountdown--;
-    popupTimer.textContent = `سيتم التخطي بعد ${popupCountdown} ثوانٍ`;
-    if (popupCountdown <= 0) {
-      clearInterval(interval);
-      popupTimer.textContent = "يمكنك التخطي الآن";
-      popupClose.style.opacity = "1";
-    }
-  }, 1000);
-}, 3000);
-
-popupClose.addEventListener("click", () => {
-  popupOverlay.style.display = "none";
-});
-
-popupOverlay.addEventListener("click", e => {
-  if (e.target === popupOverlay) popupOverlay.style.display = "none";
-});

@@ -16,6 +16,17 @@ const LEAGUE_IDS = {
 
 const SEASON = "2024-2025";
 
+function teamBadge(url, name) {
+  const initial = (name || "?").charAt(0);
+  if (url && url !== "https://via.placeholder.com/24" && url !== "https://via.placeholder.com/40") {
+    return `<div class="badge-wrapper">
+      <img class="standing-logo" src="${url}" onerror="this.style.display='none'">
+      <div class="team-avatar">${initial}</div>
+    </div>`;
+  }
+  return `<div class="team-avatar">${initial}</div>`;
+}
+
 function formatTime(timeString) {
   if (!timeString) return "لاحقاً";
   const [hours, minutes] = timeString.split(":");
@@ -145,8 +156,8 @@ function renderStandings(table) {
 
   table.forEach(row => {
     const rank = row.intRank || "-";
-    const badge = row.strTeamBadge || "https://via.placeholder.com/24";
     const name = row.strTeam || "فريق";
+    const badgeHtml = teamBadge(row.strTeamBadge, name);
     const played = row.intPlayed || "0";
     const win = row.intWin || "0";
     const draw = row.intDraw || "0";
@@ -170,7 +181,7 @@ function renderStandings(table) {
       <tr class="${topThree}">
         <td class="rank-cell">${rank}</td>
         <td class="team-cell">
-          <img class="standing-logo" src="${badge}">
+          ${badgeHtml}
           <span class="standing-name">${name}</span>
         </td>
         <td>${played}</td>
@@ -216,9 +227,10 @@ function renderSidebarStandings(table) {
   </div>`;
 
   top5.forEach(row => {
+    const badgeHtml = teamBadge(row.strTeamBadge, row.strTeam);
     html += `<div class="standing-row">
       <div>${row.intRank}</div>
-      <img class="standing-logo" src="${row.strTeamBadge || "https://via.placeholder.com/24"}">
+      ${badgeHtml}
       <div class="standing-name">${row.strTeam}</div>
       <div class="standing-points">${row.intPoints}</div>
     </div>`;
