@@ -10,7 +10,7 @@ function formatTime(timeString){
 
   const hour = parseInt(hours);
 
-  return `${hour}:${minutes} UTC+1`;
+  return `${hour}:${minutes}`;
 
 }
 
@@ -120,10 +120,6 @@ function renderMatches(matches, onlyLive = false) {
 
         < div class="timezone">
          UTC+1
-          </div>
-
-          <div class="match-status">
-            ${time}
           </div>
 
           ${liveBadge}
