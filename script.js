@@ -118,9 +118,19 @@ function renderMatches(matches, onlyLive = false) {
       ? `<div class="live-small">LIVE</div>`
       : "";
 
+    const streamUrl = match.strVideo || "";
+
+    const params = new URLSearchParams({
+      home, away,
+      homeBadge, awayBadge,
+      scoreHome, scoreAway,
+      league: match.strLeague || "",
+      stream: streamUrl
+    });
+
     container.innerHTML += `
 
-      <div class="match-row">
+      <div class="match-row" onclick="location.href='watch.html?${params.toString()}'">
 
         <div class="team">
           <img class="team-logo" src="${homeBadge}">

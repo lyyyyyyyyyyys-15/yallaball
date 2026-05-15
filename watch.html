@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KORAGOAL - مشاهدة المباراة</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="topbar">
+    <a href="index.html" class="back-btn">← الرجوع</a>
+    <div class="logo-text">KORAGOAL</div>
+    <div></div>
+  </div>
+
+  <div class="watch-page">
+
+    <div class="watch-match-header" id="watch-header">
+      <div class="watch-team">
+        <img class="watch-logo" id="watch-home-badge" src="">
+        <div class="watch-team-name" id="watch-home-name">--</div>
+      </div>
+      <div class="watch-score" id="watch-score">- :-</div>
+      <div class="watch-team">
+        <img class="watch-logo" id="watch-away-badge" src="">
+        <div class="watch-team-name" id="watch-away-name">--</div>
+      </div>
+    </div>
+
+    <div class="watch-player-wrapper">
+      <iframe id="stream-player" src="" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <div class="watch-controls">
+      <div class="watch-label">رابط البث المباشر</div>
+      <div class="stream-input-row">
+        <input type="text" id="stream-url-input" placeholder="أدخل رابط البث..." />
+        <button id="load-stream-btn">تحديث</button>
+      </div>
+      <div class="stream-hint">يمكنك تغيير الرابط أعلاه وتحديثه في أي وقت</div>
+    </div>
+
+  </div>
+
+  <script src="watch.js"></script>
+</body>
+</html>
