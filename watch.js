@@ -50,6 +50,20 @@ urlInput.addEventListener("keydown", e => {
   }
 });
 
+/* THEME */
+function toggleTheme(){
+  document.body.classList.toggle("dark-mode");
+  const isDark = document.body.classList.contains("dark-mode");
+  localStorage.setItem("koragoal-theme", isDark ? "dark" : "light");
+  document.getElementById("theme-toggle").textContent = isDark ? "☀️" : "🌙";
+}
+
+const savedTheme = localStorage.getItem("koragoal-theme");
+if (savedTheme === "dark") {
+  document.body.classList.add("dark-mode");
+  document.getElementById("theme-toggle").textContent = "☀️";
+}
+
 /* MATCH INFO + HIGHLIGHTS */
 if (idEvent) {
   fetch(`https://www.thesportsdb.com/api/v1/json/123/lookupevent.php?id=${idEvent}`)

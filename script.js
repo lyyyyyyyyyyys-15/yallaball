@@ -297,5 +297,19 @@ document.addEventListener("click", e => {
   }
 });
 
+/* THEME */
+function toggleTheme(){
+  document.body.classList.toggle("dark-mode");
+  const isDark = document.body.classList.contains("dark-mode");
+  localStorage.setItem("koragoal-theme", isDark ? "dark" : "light");
+  document.getElementById("theme-toggle").textContent = isDark ? "☀️" : "🌙";
+}
+
+const savedTheme = localStorage.getItem("koragoal-theme");
+if (savedTheme === "dark") {
+  document.body.classList.add("dark-mode");
+  document.getElementById("theme-toggle").textContent = "☀️";
+}
+
 loadMatches(0);
 if (currentLeague !== "all") loadStandings(currentLeague);
