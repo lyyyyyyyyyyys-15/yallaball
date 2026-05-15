@@ -6,26 +6,25 @@ const homeBadge = params.get("homeBadge") || "https://api-sports.io";
 const awayBadge = params.get("awayBadge") || "https://api-sports.io";
 const matchId = params.get("id");
 
-// عرض تفاصيل الواجهة وشعارات الفرق الأصلية لموقعك
+// ضخ الأيقونات والأسماء والبيانات فوراً في صفحة watch.html للمشاهد
 document.getElementById("watch-home-name").textContent = home;
 document.getElementById("watch-away-name").textContent = away;
 document.getElementById("watch-home-badge").src = homeBadge;
 document.getElementById("watch-away-badge").src = awayBadge;
 document.getElementById("watch-score").textContent = "VS";
-document.title = `KORAGOAL - مشاهدة مباراة ${home} ضد ${away}`;
+document.title = `KORAGOAL - بث مباشر ${home} ضد ${away}`;
 
 const iframe = document.getElementById("stream-player");
 const urlInput = document.getElementById("stream-url-input");
 
 if (matchId && iframe) {
-  // الأتمتة الكاملة: دمج معرف المباراة المباشر مع رابط صفحة التضمين الكامل للموقع المصدر
-  // هذا الرابط يتحدث تلقائياً من خادمهم ويعرض البث المباشر للمباراة الجارية فوراً
+  // الأتمتة اللحظية: إحضار صفحة البث الحي النشطة للمباراة من إنترنت موقع يلا شوت أوتوماتيكياً
   const autoStreamUrl = `https://yalla-shoot.world{matchId}/`;
   
   iframe.src = autoStreamUrl;
   if (urlInput) urlInput.value = autoStreamUrl;
   
-  // منح الإطار الصلاحيات الكاملة لتشغيل الفيديو بملء الشاشة تلقائياً
+  // تفعيل صلاحيات ملء الشاشة والتشغيل التلقائي الآمن للفيديو للمشاهد
   iframe.setAttribute("allow", "autoplay; encrypted-media; picture-in-picture");
 }
 
