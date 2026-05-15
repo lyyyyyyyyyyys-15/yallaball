@@ -21,6 +21,18 @@ async function loadMatches(dayOffset = 0) {
 
   allMatches = data.events || [];
 
+  function formatTime(timeString){
+
+  if(!timeString) return "لاحقاً";
+
+  const [hours, minutes] = timeString.split(":");
+
+  const hour = parseInt(hours);
+
+  return `${hour}:${minutes} UTC+1`;
+
+}
+
   renderMatches(allMatches, false);
 
 }
@@ -102,8 +114,8 @@ function renderMatches(matches, onlyLive = false) {
 
         <div class="score-box">
 
-          <div class="score">
-            ${scoreHome} - ${scoreAway}
+          <div class="match-time">
+          ${formatTime(time)}
           </div>
 
           <div class="match-status">
