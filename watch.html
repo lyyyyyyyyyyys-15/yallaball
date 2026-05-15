@@ -14,6 +14,11 @@
     <div></div>
   </div>
 
+  <div class="ad-banner ad-banner-top">
+    <div class="ad-label">إعلان</div>
+    <div class="ad-placeholder">مساحة إعلانية</div>
+  </div>
+
   <div class="watch-page">
 
     <div class="watch-match-header" id="watch-header">
@@ -32,6 +37,11 @@
       <iframe id="stream-player" src="" frameborder="0" allowfullscreen></iframe>
     </div>
 
+    <div class="ad-banner ad-banner-mid">
+      <div class="ad-label">إعلان</div>
+      <div class="ad-placeholder">مساحة إعلانية</div>
+    </div>
+
     <div class="watch-controls">
       <div class="watch-label">رابط البث المباشر</div>
       <div class="stream-input-row">
@@ -41,6 +51,19 @@
       <div class="stream-hint">يمكنك تغيير الرابط أعلاه وتحديثه في أي وقت</div>
     </div>
 
+  </div>
+
+  <div id="ad-popup-overlay" class="ad-popup-overlay">
+    <div class="ad-popup">
+      <div class="ad-popup-header">
+        <span class="ad-label">إعلان</span>
+        <button class="ad-popup-close" id="ad-popup-close">تخطي ×</button>
+      </div>
+      <div class="ad-popup-content">
+        <div class="ad-placeholder ad-placeholder-lg">مساحة إعلانية</div>
+      </div>
+      <div class="ad-popup-timer" id="ad-popup-timer">سيتم التخطي بعد 5 ثوانٍ</div>
+    </div>
   </div>
 
   <script src="watch.js"></script>
