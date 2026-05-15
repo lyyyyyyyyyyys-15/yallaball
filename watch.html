@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KORAGOAL - مشاهدة المباراة</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body>
 
@@ -54,7 +55,7 @@
     </div>
 
     <div class="watch-player-wrapper" id="watch-player-wrapper">
-      <iframe id="stream-player" src="" frameborder="0" allowfullscreen></iframe>
+      <video id="stream-player" controls playsinline></video>
     </div>
 
     <div class="watch-controls" id="watch-controls">

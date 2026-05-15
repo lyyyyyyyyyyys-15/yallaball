@@ -6,7 +6,6 @@ const homeBadge = params.get("homeBadge") || "";
 const awayBadge = params.get("awayBadge") || "";
 const scoreHome = params.get("scoreHome") || "-";
 const scoreAway = params.get("scoreAway") || "-";
-const stream = params.get("stream") || "";
 const league = params.get("league") || "";
 const idEvent = params.get("idEvent") || "";
 
@@ -17,25 +16,64 @@ document.getElementById("watch-away-badge").src = awayBadge;
 const matchStarted = scoreHome !== "-" && scoreAway !== "-" && scoreHome !== "" && scoreAway !== "";
 document.getElementById("watch-score").textContent = matchStarted ? `${scoreHome} - ${scoreAway}` : "VS";
 
-if (!matchStarted) {
-  document.getElementById("watch-player-wrapper").style.display = "none";
-  document.getElementById("watch-controls").style.display = "none";
-}
-
 document.title = `KORAGOAL - ${home} vs ${away}`;
 
-const player = document.getElementById("stream-player");
+/* VIDEO PLAYER */
+const video = document.getElementById("stream-player");
 const urlInput = document.getElementById("stream-url-input");
 const loadBtn = document.getElementById("load-stream-btn");
 
+let hls = null;
+
 function loadStream(url) {
   if (!url) return;
-  player.src = url;
+  if (hls) { hls.destroy(); hls = null; }
+  if (url.includes(".m3u8")) {
+    if (Hls.isSupported()) {
+      hls = new Hls();
+      hls.loadSource(url);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(() => {}));
+    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+      video.src = url;
+      video.play().catch(() => {});
+    }
+  } else {
+    video.src = url;
+    video.play().catch(() => {});
+  }
 }
 
-if (stream) {
-  urlInput.value = stream;
-  loadStream(stream);
+const M3U_URL = "https://iptv-org.github.io/iptv/index.m3u";
+
+async function fetchM3U() {
+  try {
+    const res = await fetch(M3U_URL);
+    const text = await res.text();
+    const lines = text.split("\n");
+    const sportsUrls = [];
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].includes('group-title="Sports"')) {
+        const urlLine = lines[i + 1];
+        if (urlLine && urlLine.startsWith("http")) {
+          sportsUrls.push(urlLine.trim());
+        }
+      }
+    }
+    if (sportsUrls.length > 0) {
+      const chosen = sportsUrls[Math.floor(Math.random() * Math.min(sportsUrls.length, 10))];
+      urlInput.value = chosen;
+      loadStream(chosen);
+    }
+  } catch {}
+}
+
+const initialUrl = params.get("stream") || "";
+if (initialUrl) {
+  urlInput.value = initialUrl;
+  loadStream(initialUrl);
+} else {
+  fetchM3U();
 }
 
 loadBtn.addEventListener("click", () => {
@@ -71,7 +109,6 @@ if (idEvent) {
     .then(data => {
       const event = data.events?.[0];
       if (!event) return;
-
       if (event.strLeague) document.getElementById("info-league").textContent = event.strLeague;
       if (event.strDate) {
         const d = new Date(event.strDate + "T" + (event.strTime || "00:00"));
@@ -95,7 +132,6 @@ if (idEvent) {
           document.getElementById("info-time").textContent = `${parseInt(h)}:${m}`;
         }
       }
-
       if (event.strVideo) {
         const youtubeId = event.strVideo.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/)?.[1];
         if (youtubeId) {
