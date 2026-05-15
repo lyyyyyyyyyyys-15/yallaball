@@ -114,13 +114,13 @@ function renderMatches(matches, onlyLive = false) {
 
         <div class="score-box">
 
-          <div class="match-time">
-          ${formatTime(time)}
-         </div>
+        <div class="match-time">
+            ${formatTime(time)}
+        </div>
 
-        < div class="timezone">
-         UTC+1
-          </div>
+        <div class="timezone">
+            UTC+1
+        </div>
 
           ${liveBadge}
 
