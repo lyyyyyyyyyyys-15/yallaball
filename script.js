@@ -28,12 +28,6 @@ function teamBadge(url, name, idTeam) {
   return `<div class="team-avatar">${initial}</div>`;
 }
 
-function formatTime(timeString) {
-  if (!timeString) return "لاحقاً";
-  const [hours, minutes] = timeString.split(":");
-  return `${parseInt(hours)}:${minutes}`;
-}
-
 async function loadMatches(dayOffset = 0) {
   container.innerHTML = "جاري تحميل المباريات...";
   const date = new Date();
@@ -76,10 +70,21 @@ function renderMatches(matches, onlyLive = false) {
     const awayBadge = match.strAwayTeamBadge || "https://via.placeholder.com/40";
     const scoreHome = match.intHomeScore ?? "-";
     const scoreAway = match.intAwayScore ?? "-";
-    const time = match.strTime || "لاحقاً";
     const status = match.strStatus || "";
     const liveBadge = status.includes("Live") || status.includes("In Progress")
       ? `<div class="live-small">LIVE</div>` : "";
+
+    let localTimeHtml = `<div class="match-time">لاحقاً</div>`;
+    if (match.strDate && match.strTime) {
+      const d = new Date(match.strDate + "T" + match.strTime);
+      if (!isNaN(d.getTime())) {
+        const hours = d.getHours().toString().padStart(2, "0");
+        const mins = d.getMinutes().toString().padStart(2, "0");
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone.split("/").pop().replace("_", " ");
+        localTimeHtml = `<div class="match-time">${hours}:${mins}</div>
+          <div class="timezone">${tz}</div>`;
+      }
+    }
 
     const params = new URLSearchParams({
       home, away, homeBadge, awayBadge,
@@ -96,8 +101,7 @@ function renderMatches(matches, onlyLive = false) {
           <span class="team-name">${home}</span>
         </div>
         <div class="score-box">
-          <div class="match-time">${formatTime(time)}</div>
-          <div class="timezone">UTC+1</div>
+          ${localTimeHtml}
           ${liveBadge}
         </div>
         <div class="team right">
