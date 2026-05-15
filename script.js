@@ -33,7 +33,7 @@ function teamBadge(url, name, idTeam) {
 
 // دالة الأتمتة الكاملة لقراءة جدول جوجل وعرض المباريات والبثوث الحية تلقائياً
 async function loadMatches(dayOffset = 0) {
-  container.innerHTML = `<div class="no-matches" style="padding:20px; font-size:16px;">جاري تحميل البثوث والمباريات أوتوماتيكياً...</div>`;
+  container.innerHTML = `<div class="no-matches" style="padding:20px; font-size:16px;">جاري تحميل البث وث والمباريات أوتوماتيكياً...</div>`;
   
   try {
     const response = await fetch(GOOGLE_SHEET_CSV_URL);
@@ -41,6 +41,49 @@ async function loadMatches(dayOffset = 0) {
     const rows = csvText.trim().split("\n");
     
     allMatches = [];
+
+    for (let i = 0; i < rows.length; i++) {
+      let rawUrl = rows[i].replace(/"/g, "").trim();
+      if (!rawUrl || !rawUrl.startsWith("http")) continue;
+
+      try {
+        let urlParts = rawUrl.split("/match/");
+        if (urlParts.length < 2) continue;
+        
+        let matchSlug = urlParts[1].split("/")[0]; 
+        let cleanText = decodeURIComponent(matchSlug); 
+
+        cleanText = cleanText.replace(/-yacine-tv/g, "")
+                             .replace(/-\d{4}-\d{2}-\d{2}/g, "") 
+                             .replace(/-/g, " "); 
+
+        let teams = cleanText.split(" ضد ");
+        let homeTeam = teams[0] ? teams[0].trim() : "بث مباشر";
+        let awayTeam = teams[1] ? teams[1].trim() : "مباراة اليوم";
+
+        allMatches.push({
+          idEvent: i + 1, 
+          strHomeTeam: homeTeam,
+          strAwayTeam: awayTeam,
+          strHomeTeamBadge: "https://api-sports.io", 
+          strAwayTeamBadge: "https://api-sports.io",
+          intHomeScore: "-",
+          intAwayScore: "-",
+          strStatus: "Live",
+          strLeague: "all"
+        });
+      } catch (e) {
+        console.error("خطأ في معالجة سطر البث:", e);
+      }
+    }
+  } catch (error) {
+    console.error("حدث خطأ أثناء جلب جدول جوجل:", error);
+    allMatches = [];
+  }
+  
+  renderMatches(allMatches, false);
+}
+
 
     // تخطي السطر الأول (العناوين) وبناء بطاقات المباريات من الأسطر التالية
     for (let i = 1; i < rows.length; i++) {
