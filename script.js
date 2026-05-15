@@ -1,22 +1,54 @@
 const container = document.getElementById("matches-container");
+const standingsContainer = document.getElementById("standings-container");
 
 let allMatches = [];
+let currentLeague = "all";
+let currentView = "matches";
+let standingsCache = {};
 
-// دالة جلب المباريات مباشرة من واجهة برمجية مفتوحة ومستقرة بدون أي وسيط
-async function loadMatches() {
+// 🔴 ضع هنا رابط الـ CSV المباشر الخاص بجدول بيانات جوجل بعد تعديله 🔴
+const GOOGLE_SHEET_CSV_URL = "ضع_رابط_جوجل_شيت_بصيغة_CSV_هنا";
+
+async function loadMatches(dayOffset = 0) {
   if (container) {
     container.innerHTML = `<div class="no-matches" style="padding:20px; font-size:16px;">جاري تحميل مباريات اليوم تلقائياً...</div>`;
   }
   
-  // استخدام واجهة رياضية مجانية ومفتوحة للمطورين تجلب مباريات اليوم حياً ومباشراً
-  const url = "https://thesportsdb.com";
-  
   try {
-    const response = await fetch(url);
-    const data = await response.json();
-    allMatches = data.events || [];
+    const response = await fetch(GOOGLE_SHEET_CSV_URL);
+    const csvText = await response.text();
+    const rows = csvText.trim().split("\n");
+    
+    allMatches = [];
+
+    // البدء من السطر الثاني لتخطي العناوين
+    for (let i = 1; i < rows.length; i++) {
+      if (!rows[i]) continue;
+      
+      const matchData = rows[i].split(",");
+      if (matchData.length < 3) continue;
+
+      // قراءة البيانات المباشرة بدون أي عمليات معالجة نصية مسببة للأخطاء
+      let homeTeam = matchData[0].replace(/"/g, "").trim();
+      let awayTeam = matchData[1].replace(/"/g, "").trim();
+      let streamUrl = matchData[2].replace(/"/g, "").trim();
+
+      if (homeTeam && awayTeam && streamUrl.startsWith("http")) {
+        allMatches.push({
+          idEvent: i, 
+          strHomeTeam: homeTeam,
+          strAwayTeam: awayTeam,
+          strHomeTeamBadge: "https://placeholder.com", 
+          strAwayTeamBadge: "https://placeholder.com",
+          intHomeScore: "-",
+          intAwayScore: "-",
+          strStatus: "Live",
+          strLeague: "all"
+        });
+      }
+    }
   } catch (error) {
-    console.error("خطأ في جلب المباريات:", error);
+    console.error("خطأ أثناء جلب البيانات:", error);
     allMatches = [];
   }
   
@@ -33,46 +65,25 @@ function renderMatches(matches) {
   }
 
   matches.forEach(match => {
-    const home = match.strHomeTeam || "الفريق المستضيف";
-    const away = match.strAwayTeam || "الفريق الضيف";
-    
-    // جلب الشعارات الرسمية للفرق تلقائياً، وفي حال عدم توفرها نضع شعار افتراضي أنيق
-    const homeBadge = match.strHomeTeamBadge || "https://api-sports.io";
-    const awayBadge = match.strAwayTeamBadge || "https://api-sports.io";
-    
-    const status = match.strStatus || "";
-    const isLive = status.includes("Live") || status.includes("In Progress");
-    const liveBadge = isLive ? `<div class="live-small">LIVE</div>` : "";
-    const timeText = isLive ? "مباشر الآن" : (match.strTime ? match.strTime.substring(0, 5) : "اليوم");
-
-    // تمرير تفاصيل المباراة مباشرة في الرابط لتقرأها صفحة watch.html تلقائياً وبأمان
-    const params = new URLSearchParams({
-      home: home,
-      away: away,
-      homeBadge: homeBadge,
-      awayBadge: awayBadge,
-      id: match.idEvent
-    });
-
     container.innerHTML += `
-      <div class="match-row" onclick="location.href='watch.html?${params.toString()}'">
+      <div class="match-row" onclick="location.href='watch.html?id=${match.idEvent}'">
         <div class="team">
-          <img class="team-logo" src="${homeBadge}">
-          <span class="team-name">${home}</span>
+          <img class="team-logo" src="${match.strHomeTeamBadge}">
+          <span class="team-name">${match.strHomeTeam}</span>
         </div>
         <div class="score-box">
-          <div class="match-time">${timeText}</div>
-          ${liveBadge}
+          <div class="match-time">مباشر</div>
+          <div class="live-small">LIVE</div>
         </div>
         <div class="team right">
-          <span class="team-name">${away}</span>
-          <img class="team-logo" src="${awayBadge}">
+          <span class="team-name">${match.strAwayTeam}</span>
+          <img class="team-logo" src="${match.strAwayTeamBadge}">
         </div>
       </div>`;
   });
 }
 
-/* تفعيل التبديل التلقائي للمظهر */
+/* تفعيل التبديل والتحكم الكامل بالمظهر بدون أخطاء متداخلة */
 function toggleTheme(){
   document.body.classList.toggle("dark-mode");
   const isDark = document.body.classList.contains("dark-mode");
@@ -88,5 +99,5 @@ if (savedTheme === "dark") {
   if(themeBtn) themeBtn.textContent = "☀️";
 }
 
-// تشغيل جلب البيانات فور فتح الصفحة
-loadMatches();
+// استدعاء التشغيل الفوري للمباريات
+loadMatches(0);
