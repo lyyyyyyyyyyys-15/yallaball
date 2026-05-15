@@ -1,13 +1,14 @@
 const container = document.getElementById("matches-container");
-let allMatches = [];
 
-// جلب مباريات اليوم الحقيقية تلقائياً وبشكل مباشر
+let allMatches = [];
+let currentLeague = "all";
+
+// 1. جلب المباريات الحقيقية وشعارات الفرق من الإنترنت تلقائياً
 async function loadMatches() {
   if (container) {
     container.innerHTML = `<div class="no-matches" style="padding:20px; font-size:16px;">جاري تحميل مباريات اليوم تلقائياً...</div>`;
   }
   
-  // واجهة برمجية رياضية عالمية ومفتوحة للمطورين ومستقرة تماماً
   const url = "https://thesportsdb.com";
   
   try {
@@ -15,23 +16,30 @@ async function loadMatches() {
     const data = await response.json();
     allMatches = data.events || [];
   } catch (error) {
-    console.error("خطأ في جلب المباريات الحية:", error);
+    console.error("خطأ في جلب بيانات المباريات:", error);
     allMatches = [];
   }
   
   renderMatches(allMatches);
 }
 
+// 2. صناعة بطاقات المباريات وتصفيتها حسب الدوري المضغوط تلقائياً
 function renderMatches(matches) {
   if (!container) return;
   container.innerHTML = "";
 
-  if (matches.length === 0) {
-    container.innerHTML = `<div class="no-matches">لا توجد مباريات جارية حالياً اليوم</div>`;
+  // فلترة المباريات بناءً على الدوري المختار من القائمة العلوية لموقعك
+  let filteredMatches = matches;
+  if (currentLeague !== "all") {
+    filteredMatches = matches.filter(m => m.strLeague === currentLeague);
+  }
+
+  if (filteredMatches.length === 0) {
+    container.innerHTML = `<div class="no-matches">لا توجد مباريات جارية حالياً في هذا القسم</div>`;
     return;
   }
 
-  matches.forEach(match => {
+  filteredMatches.forEach(match => {
     const home = match.strHomeTeam || "الفريق المستضيف";
     const away = match.strAwayTeam || "الفريق الضيف";
     const homeBadge = match.strHomeTeamBadge || "https://api-sports.io";
@@ -42,13 +50,13 @@ function renderMatches(matches) {
     const liveBadge = isLive ? `<div class="live-small">LIVE</div>` : "";
     const timeText = isLive ? "مباشر الآن" : (match.strTime ? match.strTime.substring(0, 5) : "اليوم");
 
-    // تمرير تفاصيل المباراة والمعرف الفرعي لصفحة watch.html تلقائياً
+    // تجهيز تفاصيل الواجهة لـ الممرر التلقائي لصفحة المشاهدة
     const params = new URLSearchParams({
       home: home,
       away: away,
       homeBadge: homeBadge,
       awayBadge: awayBadge,
-      id: match.idEvent // هذا المعرف سيتم تحويله تلقائياً لرابط البث النشط
+      id: match.idEvent
     });
 
     container.innerHTML += `
@@ -69,7 +77,19 @@ function renderMatches(matches) {
   });
 }
 
-/* زر تبديل المظهر الليلي الشغال بنجاح */
+/* ربط أزرار الدوريات الكبرى المتواجدة في ملف index.html الخاص بك */
+document.addEventListener("click", e => {
+  if (e.target.classList.contains("league-btn")) {
+    document.querySelectorAll(".league-btn").forEach(btn => btn.classList.remove("active"));
+    e.target.classList.add("active");
+    
+    // قراءة اسم الدوري الممرر عبر خاصية (data-league) في تصميم موقعك
+    currentLeague = e.target.dataset.league;
+    renderMatches(allMatches);
+  }
+});
+
+/* زر تبديل المظهر الشغال والمحفوظ بأمان */
 function toggleTheme(){
   document.body.classList.toggle("dark-mode");
   const isDark = document.body.classList.contains("dark-mode");
