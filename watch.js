@@ -79,12 +79,20 @@ if (idEvent) {
           weekday: "long", year: "numeric", month: "long", day: "numeric"
         });
       }
-      if (event.strTime && event.strDate) {
-        const d = new Date(event.strDate + "T" + event.strTime);
-        if (!isNaN(d.getTime())) {
-          document.getElementById("info-time").textContent = d.toLocaleTimeString("ar-SA", {
-            hour: "2-digit", minute: "2-digit"
-          }) + " " + d.toLocaleTimeString("ar-SA", { timeZoneName: "short" }).split(" ").pop();
+      if (event.strTime) {
+        if (event.strDate) {
+          const d = new Date(event.strDate + "T" + event.strTime);
+          if (!isNaN(d.getTime())) {
+            document.getElementById("info-time").textContent = d.toLocaleTimeString("ar-SA", {
+              hour: "2-digit", minute: "2-digit"
+            });
+          } else {
+            const [h, m] = event.strTime.split(":");
+            document.getElementById("info-time").textContent = `${parseInt(h)}:${m}`;
+          }
+        } else {
+          const [h, m] = event.strTime.split(":");
+          document.getElementById("info-time").textContent = `${parseInt(h)}:${m}`;
         }
       }
 

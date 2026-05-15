@@ -75,14 +75,21 @@ function renderMatches(matches, onlyLive = false) {
       ? `<div class="live-small">LIVE</div>` : "";
 
     let localTimeHtml = `<div class="match-time">لاحقاً</div>`;
-    if (match.strDate && match.strTime) {
-      const d = new Date(match.strDate + "T" + match.strTime);
-      if (!isNaN(d.getTime())) {
-        const hours = d.getHours().toString().padStart(2, "0");
-        const mins = d.getMinutes().toString().padStart(2, "0");
-        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone.split("/").pop().replace("_", " ");
-        localTimeHtml = `<div class="match-time">${hours}:${mins}</div>
-          <div class="timezone">${tz}</div>`;
+    if (match.strTime) {
+      const parts = match.strTime.split(":");
+      const h = parts[0];
+      const m = parts[1] || "00";
+      if (match.strDate) {
+        const d = new Date(match.strDate + "T" + match.strTime);
+        if (!isNaN(d.getTime())) {
+          const lh = d.getHours().toString().padStart(2, "0");
+          const lm = d.getMinutes().toString().padStart(2, "0");
+          localTimeHtml = `<div class="match-time">${lh}:${lm}</div>`;
+        } else {
+          localTimeHtml = `<div class="match-time">${h}:${m}</div>`;
+        }
+      } else {
+        localTimeHtml = `<div class="match-time">${h}:${m}</div>`;
       }
     }
 
