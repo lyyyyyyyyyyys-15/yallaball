@@ -18,63 +18,19 @@ document.getElementById("watch-score").textContent = matchStarted ? `${scoreHome
 
 document.title = `KORAGOAL - ${home} vs ${away}`;
 
-/* VIDEO PLAYER */
-const video = document.getElementById("stream-player");
+/* IFRAME PLAYER */
+const iframe = document.getElementById("stream-player");
 const urlInput = document.getElementById("stream-url-input");
 const loadBtn = document.getElementById("load-stream-btn");
 
-let hls = null;
+const DEFAULT_STREAM = "https://cdn25.yshoot.click/chtv/ch1.php";
 
 function loadStream(url) {
   if (!url) return;
-  if (hls) { hls.destroy(); hls = null; }
-  if (url.includes(".m3u8")) {
-    if (Hls.isSupported()) {
-      hls = new Hls();
-      hls.loadSource(url);
-      hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(() => {}));
-    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      video.src = url;
-      video.play().catch(() => {});
-    }
-  } else {
-    video.src = url;
-    video.play().catch(() => {});
-  }
+  iframe.src = url;
 }
 
-const M3U_URL = "https://iptv-org.github.io/iptv/index.m3u";
-
-async function fetchM3U() {
-  try {
-    const res = await fetch(M3U_URL);
-    const text = await res.text();
-    const lines = text.split("\n");
-    const sportsUrls = [];
-    for (let i = 0; i < lines.length; i++) {
-      if (lines[i].includes('group-title="Sports"')) {
-        const urlLine = lines[i + 1];
-        if (urlLine && urlLine.startsWith("http")) {
-          sportsUrls.push(urlLine.trim());
-        }
-      }
-    }
-    if (sportsUrls.length > 0) {
-      const chosen = sportsUrls[Math.floor(Math.random() * Math.min(sportsUrls.length, 10))];
-      urlInput.value = chosen;
-      loadStream(chosen);
-    }
-  } catch {}
-}
-
-const initialUrl = params.get("stream") || "";
-if (initialUrl) {
-  urlInput.value = initialUrl;
-  loadStream(initialUrl);
-} else {
-  fetchM3U();
-}
+urlInput.value = DEFAULT_STREAM;
 
 loadBtn.addEventListener("click", () => {
   const val = urlInput.value.trim();
