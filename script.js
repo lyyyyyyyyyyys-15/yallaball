@@ -2,6 +2,8 @@ const container = document.getElementById("matches-container");
 
 let allMatches = [];
 
+let currentLeague = "English Premier League";
+
 function formatTime(timeString){
 
   if(!timeString) return "لاحقاً";
@@ -54,7 +56,7 @@ function renderMatches(matches, onlyLive = false) {
 
   if (onlyLive) {
 
-    filteredMatches = matches.filter(match => {
+    filteredMatches = filteredMatches.filter(match => {
 
       return (
         match.strStatus &&
@@ -195,8 +197,6 @@ document.addEventListener("click", e => {
       e.target.dataset.league;
 
     currentLeague = league;
-
-    let currentLeague = "English Premier League";
 
 renderMatches(allMatches);
 
