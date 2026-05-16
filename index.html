@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>KORAGOAL</title>
-
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
   <div class="topbar">
@@ -26,61 +22,31 @@
 
       <div class="league-menu">
         <button class="league-btn active" data-league="all">الكل</button>
-        <button class="league-btn active" data-league="English Premier League">Premier League</button>
+        <button class="league-btn" data-league="English Premier League">Premier League</button>
         <button class="league-btn" data-league="Spanish La Liga">La Liga</button>
         <button class="league-btn" data-league="German Bundesliga">Bundesliga</button>
         <button class="league-btn" data-league="Italian Serie A">Serie A</button>
         <button class="league-btn" data-league="French Ligue 1">Ligue 1</button>
       </div>
 
-      <div class="view-tabs">
-        <div class="view-btn active" data-view="matches">المباريات</div>
-        <div class="view-btn" data-view="standings">الترتيب</div>
-      </div>
-
-      <div class="filters">
-        <div class="filter-btn active">الكل</div>
-        <div class="filter-btn">مباشر</div>
-        <div class="filter-btn">اليوم</div>
-        <div class="filter-btn">غداً</div>
-      </div>
-
-      <div class="section-title">مباريات اليوم</div>
-      <div id="matches-container"></div>
-
-      <div id="standings-container">
-        <div class="no-matches">اختر دورياً لعرض الترتيب</div>
-      </div>
+      <div class="matches-scroll" id="matches-container"></div>
 
     </div>
 
     <div class="sidebar">
 
-      <div class="hero-card">
-        <div class="hero-top">
-          <div>المباراة الأبرز</div>
+      <div class="stream-card">
+        <div class="stream-card-top">
           <div class="live-badge">LIVE</div>
         </div>
-        <div class="hero-teams">
-          <div class="hero-team">
-            <img class="hero-logo" src="https://media.api-sports.io/football/teams/40.png">
-            <div class="hero-name">Liverpool</div>
-          </div>
-          <div class="hero-score">2 - 1</div>
-          <div class="hero-team">
-            <img class="hero-logo" src="https://media.api-sports.io/football/teams/50.png">
-            <div class="hero-name">Man City</div>
-          </div>
-        </div>
-        <button class="watch-btn" onclick="location.href='watch.html?home=Liverpool&amp;away=Man+City&amp;homeBadge=https://media.api-sports.io/football/teams/40.png&amp;awayBadge=https://media.api-sports.io/football/teams/50.png&amp;scoreHome=2&amp;scoreAway=1'">
-          مشاهدة المباراة
-        </button>
+        <iframe class="stream-card-iframe" src="https://cdn25.yshoot.click/chtv/ch1.php" frameborder="0" allowfullscreen></iframe>
+        <div class="stream-card-label">البث المباشر - يلا شوت</div>
       </div>
 
       <div class="sidebar-card" id="sidebar-standings">
-        <div class="sidebar-title">ترتيب الدوري الإنجليزي</div>
+        <div class="sidebar-title">ترتيب الدوري</div>
         <div id="sidebar-standings-content">
-          <div class="no-matches" style="padding:15px;font-size:14px;">جاري التحميل...</div>
+          <div class="no-matches" style="padding:15px;font-size:14px;">اختر دورياً</div>
         </div>
       </div>
 
@@ -89,6 +55,5 @@
   </div>
 
   <script src="script.js"></script>
-
 </body>
 </html>
